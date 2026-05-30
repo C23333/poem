@@ -1,0 +1,125 @@
+---
+import ReadingModeTabs from "@/components/ReadingModeTabs.astro";
+import { getReadingConfig } from "@/config/site";
+
+interface Line {
+  zh: string;
+  en?: string;
+  zhHelper?: string;
+  pinyin?: string;
+}
+
+interface Props {
+  title: string;
+  titleEn?: string;
+  poet: string;
+  dynasty: string;
+  themes: string[];
+  lines: Line[];
+}
+
+const reading = getReadingConfig();
+const { title, titleEn, poet, dynasty, themes, lines } = Astro.props;
+---
+
+<section class="reader">
+  <div class="reader-top">
+    <div>
+      <h1>{title}{titleEn ? ` · ${titleEn}` : ""}</h1>
+      <p class="meta">{dynasty} · {poet} · {themes.join(" / ")}</p>
+    </div>
+    <ReadingModeTabs selected={reading.defaultMode} />
+  </div>
+
+  <div class="helper-row">
+    <span>Helper line / 注释行</span>
+    <span>Default: {reading.defaultHelperLanguage}</span>
+  </div>
+
+  <div class="poem-lines">
+    {lines.map((line) => (
+      <div class="line">
+        <div class="han">{line.zh}</div>
+        {line.en && <div class="sub">{line.en}</div>}
+        {line.zhHelper && <div class="zh-sub">{line.zhHelper}</div>}
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .reader {
+    background: rgba(255, 249, 234, 0.72);
+    border: 1px solid var(--line);
+    box-shadow: 0 26px 80px rgba(27, 26, 23, 0.14);
+    padding: 22px;
+  }
+
+  .reader-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 16px;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--teal);
+    font-size: 34px;
+    line-height: 1.2;
+  }
+
+  .meta,
+  .helper-row {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .helper-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .poem-lines {
+    display: grid;
+    gap: 18px;
+    padding-top: 24px;
+  }
+
+  .line {
+    padding: 4px 0 14px;
+    border-bottom: 1px solid rgba(27, 26, 23, 0.08);
+  }
+
+  .han {
+    font-size: 28px;
+    line-height: 1.55;
+  }
+
+  .sub {
+    margin-top: 5px;
+    color: var(--muted);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  .zh-sub {
+    margin-top: 5px;
+    color: var(--cinnabar);
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  @media (max-width: 820px) {
+    .reader-top,
+    .helper-row {
+      flex-direction: column;
+    }
+  }
+</style>

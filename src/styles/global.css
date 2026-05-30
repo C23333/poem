@@ -1,0 +1,68 @@
+:root {
+  --paper: #f5eedc;
+  --paper-2: #fff9ea;
+  --ink: #1b1a17;
+  --muted: #6c6254;
+  --cinnabar: #a33625;
+  --teal: #123f3b;
+  --gold: #ad8436;
+  --line: rgba(27, 26, 23, 0.14);
+  --soft-teal: rgba(18, 63, 59, 0.08);
+  --soft-red: rgba(163, 54, 37, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(90deg, rgba(18, 63, 59, 0.08), transparent 42%),
+    radial-gradient(circle at 80% 0%, rgba(173, 132, 54, 0.2), transparent 28rem),
+    var(--paper);
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif;
+  line-height: 1.72;
+}
+
+a {
+  color: inherit;
+}
+
+.site-shell {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 26px;
+}
+
+.topline {
+  height: 6px;
+  background: linear-gradient(90deg, var(--teal), var(--gold), var(--cinnabar));
+}
+
+.section-title {
+  margin: 60px 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--teal);
+  font-size: 25px;
+}
+
+.section-title::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, rgba(18, 63, 59, 0.45), transparent);
+}
+
+@media (max-width: 580px) {
+  .site-shell {
+    padding: 0 18px;
+  }
+}

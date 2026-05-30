@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>诗词站视觉方向稿</title>
+  <style>
+    :root {
+      --paper: #f6f0df;
+      --paper-deep: #eadfbd;
+      --ink: #1c1b18;
+      --muted: #6b6252;
+      --cinnabar: #a73522;
+      --teal: #123f3b;
+      --gold: #b08a3c;
+      --stone: #d6c7a3;
+      --white: #fffaf0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% 0%, rgba(176, 138, 60, 0.18), transparent 28rem),
+        linear-gradient(120deg, rgba(18, 63, 59, 0.09), transparent 34rem),
+        var(--paper);
+      font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif;
+      line-height: 1.72;
+    }
+
+    .topline {
+      height: 5px;
+      background: linear-gradient(90deg, var(--teal), var(--gold), var(--cinnabar));
+    }
+
+    header {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 22px 24px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--teal);
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .seal {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      background: var(--cinnabar);
+      border: 2px solid rgba(255, 250, 240, 0.55);
+      box-shadow: 0 0 0 1px var(--cinnabar);
+      font-size: 19px;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 15px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 16px 24px 72px;
+    }
+
+    .hero {
+      min-height: 560px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      gap: 42px;
+      align-items: center;
+      border-top: 1px solid rgba(28, 27, 24, 0.12);
+      padding-top: 42px;
+    }
+
+    .kicker {
+      color: var(--cinnabar);
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(44px, 7vw, 86px);
+      line-height: 1.05;
+      letter-spacing: 0;
+      color: var(--ink);
+    }
+
+    .hero p {
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 18px;
+      margin: 22px 0 0;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .btn {
+      border: 1px solid var(--teal);
+      background: var(--teal);
+      color: var(--white);
+      padding: 12px 18px;
+      font-size: 15px;
+      text-decoration: none;
+      min-width: 124px;
+      text-align: center;
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: var(--teal);
+    }
+
+    .poem-panel {
+      background: rgba(255, 250, 240, 0.68);
+      border: 1px solid rgba(28, 27, 24, 0.13);
+      box-shadow: 0 26px 80px rgba(28, 27, 24, 0.13);
+      padding: 30px;
+      position: relative;
+    }
+
+    .poem-panel::before {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgba(176, 138, 60, 0.35);
+      pointer-events: none;
+    }
+
+    .poem-panel h2 {
+      margin: 0 0 6px;
+      color: var(--teal);
+      font-size: 30px;
+      letter-spacing: 0;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .verses {
+      font-size: 24px;
+      line-height: 2.05;
+      margin: 0 0 24px;
+    }
+
+    .note {
+      border-left: 3px solid var(--cinnabar);
+      padding-left: 14px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .section-title {
+      margin: 64px 0 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--teal);
+      font-size: 25px;
+    }
+
+    .section-title::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, rgba(18, 63, 59, 0.5), transparent);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: rgba(255, 250, 240, 0.58);
+      border: 1px solid rgba(28, 27, 24, 0.12);
+      padding: 22px;
+      min-height: 190px;
+    }
+
+    .card strong {
+      display: block;
+      color: var(--cinnabar);
+      margin-bottom: 8px;
+    }
+
+    .card h3 {
+      color: var(--ink);
+      font-size: 22px;
+      margin: 0 0 10px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .detail-preview {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+      border: 1px solid rgba(28, 27, 24, 0.13);
+      background: rgba(255, 250, 240, 0.56);
+    }
+
+    .detail-preview aside {
+      padding: 28px;
+      background: rgba(18, 63, 59, 0.08);
+      border-right: 1px solid rgba(28, 27, 24, 0.12);
+    }
+
+    .detail-preview article {
+      padding: 28px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .tag {
+      border: 1px solid rgba(167, 53, 34, 0.28);
+      color: var(--cinnabar);
+      padding: 4px 9px;
+      font-size: 13px;
+      background: rgba(167, 53, 34, 0.05);
+    }
+
+    .ad-slot {
+      margin-top: 22px;
+      border: 1px dashed rgba(107, 98, 82, 0.45);
+      color: var(--muted);
+      padding: 14px;
+      text-align: center;
+      font-size: 13px;
+      background: rgba(255, 250, 240, 0.38);
+    }
+
+    footer {
+      border-top: 1px solid rgba(28, 27, 24, 0.12);
+      color: var(--muted);
+      padding: 26px 24px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 860px) {
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      nav {
+        justify-content: flex-start;
+      }
+
+      .hero,
+      .detail-preview {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-preview aside {
+        border-right: 0;
+        border-bottom: 1px solid rgba(28, 27, 24, 0.12);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topline"></div>
+  <header>
+    <div class="brand">
+      <div class="seal">詩</div>
+      <div>
+        <div>未名诗阁</div>
+        <small>Classical Chinese Poetry</small>
+      </div>
+    </div>
+    <nav>
+      <span>每日一诗</span>
+      <span>诗人</span>
+      <span>朝代</span>
+      <span>主题</span>
+      <span>英文导读</span>
+      <span>订阅</span>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <div class="kicker">SEO-first · Bilingual · Reviewed Commentary</div>
+        <h1>让古诗词重新进入日常阅读</h1>
+        <p>每一首诗都不只放原文。页面会补上注释、今译、英译、背景、赏析、主题路径和相关诗词，让搜索流量进入后真的有东西可读，也为后续个性化推荐留下空间。</p>
+        <div class="actions">
+          <a class="btn" href="#">今日诗笺</a>
+          <a class="btn secondary" href="#">浏览主题</a>
+        </div>
+      </div>
+
+      <div class="poem-panel">
+        <h2>江夜</h2>
+        <div class="meta">唐 · 杜甫 · 夜泊 / 江水 / 漂泊</div>
+        <div class="verses">
+          露从今夜白，月是故乡明。<br>
+          有弟皆分散，无家问死生。
+        </div>
+        <div class="note">示例：这里不是只复制诗句，而是解释“故乡明”为什么成立，补充战乱背景、亲族离散和英文读者能理解的情绪入口。</div>
+      </div>
+    </section>
+
+    <h2 class="section-title">内容增量</h2>
+    <section class="grid">
+      <div class="card">
+        <strong>01</strong>
+        <h3>注释与今译</h3>
+        <p>把难字、典故、语序和现代中文解释放在同一阅读路径里，减少读者跳出搜索。</p>
+      </div>
+      <div class="card">
+        <strong>02</strong>
+        <h3>英文导读</h3>
+        <p>面向海外搜索词提供英译、背景和主题词，不做机器直译式镜像页面。</p>
+      </div>
+      <div class="card">
+        <strong>03</strong>
+        <h3>主题网络</h3>
+        <p>把月、江、离别、边塞、春日等主题连起来，形成站内可继续阅读的路径。</p>
+      </div>
+    </section>
+
+    <h2 class="section-title">诗词详情页方向</h2>
+    <section class="detail-preview">
+      <aside>
+        <h3>杜甫</h3>
+        <p>712—770，唐代诗人。这里放作者小传、代表主题、时代背景和相关专题入口。</p>
+        <div class="tags">
+          <span class="tag">漂泊</span>
+          <span class="tag">家国</span>
+          <span class="tag">月夜</span>
+          <span class="tag">唐诗</span>
+        </div>
+        <div class="ad-slot">AdSense slot: sidebar / disabled until configured</div>
+      </aside>
+      <article>
+        <h3>为什么这首诗适合今日推荐</h3>
+        <p>示例文案：这首诗把“月亮”从风景写成了距离。读者看到的不是一个固定意象，而是人在离散里的判断：同一轮月，在故乡那边才像真正明亮。</p>
+        <p>下面可以继续展开：词句注释、创作背景、英文译文、相关诗词、引用来源和审校状态。</p>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    About · Privacy · Terms · Contact · Content Sources · RSS · Sitemap
+  </footer>
+</body>
+</html>

@@ -1,0 +1,27 @@
+---
+import { getAdsConfig } from "@/config/site";
+
+interface Props {
+  slot: keyof ReturnType<typeof getAdsConfig>["slots"];
+}
+
+const ads = getAdsConfig();
+const slot = ads.slots[Astro.props.slot];
+---
+
+{ads.enabled ? (
+  <ins class="adsbygoogle" data-ad-client={ads.adsenseClient} data-ad-slot={slot.name}></ins>
+) : (
+  <div class="ad-slot" data-ad-slot={slot.name} hidden aria-hidden="true"></div>
+)}
+
+<style>
+  .ad-slot {
+    margin-top: 18px;
+    border: 1px dashed rgba(108, 98, 84, 0.5);
+    padding: 12px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+</style>

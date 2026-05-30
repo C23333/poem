@@ -1,0 +1,57 @@
+---
+import Analytics from "@/components/Analytics.astro";
+import SiteFooter from "@/components/SiteFooter.astro";
+import SiteHeader from "@/components/SiteHeader.astro";
+import { getSiteConfig } from "@/config/site";
+import { buildCanonicalUrl, serializeJsonLd } from "@/lib/seo/meta";
+import "@/styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  robots?: string;
+  lang?: "zh-CN" | "en";
+  alternates?: Array<{ lang: string; href: string }>;
+  jsonLd?: unknown;
+}
+
+const site = getSiteConfig();
+const {
+  title,
+  description,
+  canonicalPath,
+  robots = "index,follow",
+  lang = "zh-CN",
+  alternates = [],
+  jsonLd
+} = Astro.props;
+const canonical = buildCanonicalUrl(site.url, canonicalPath);
+const jsonLdText = jsonLd ? serializeJsonLd(jsonLd) : "";
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={canonical} />
+    {alternates.map((alternate) => <link rel="alternate" hreflang={alternate.lang} href={alternate.href} />)}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {jsonLdText && <script type="application/ld+json" is:inline set:html={jsonLdText} />}
+    <Analytics />
+  </head>
+  <body>
+    <div class="topline"></div>
+    <SiteHeader />
+    <main class="site-shell">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

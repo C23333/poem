@@ -1,0 +1,56 @@
+---
+import SubscriptionPanel from "@/components/SubscriptionPanel.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [{ params: { date: "today" } }];
+}
+---
+
+<BaseLayout title="今日诗笺 - Daily Poem" description="Today's recommended Chinese poem." canonicalPath="/daily/today">
+  <section class="daily-hero">
+    <p class="kicker">Daily Poem · 2026</p>
+    <h1>今日诗笺</h1>
+    <p>今日推荐：《静夜思》。这个页面用于承接每日邮件、RSS、社媒分享和搜索引擎抓取。</p>
+    <p><a class="button" href="/poems/jing-ye-si">阅读全文</a></p>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">推荐理由</h2>
+    <p>
+      《静夜思》适合作为第一篇示例内容，因为它有稳定的海外认知度，也能自然展开“月夜”“乡思”“唐诗启蒙”等主题路径。
+    </p>
+  </section>
+
+  <SubscriptionPanel />
+</BaseLayout>
+
+<style>
+  .daily-hero {
+    max-width: 760px;
+    padding: 58px 0 20px;
+  }
+
+  .kicker {
+    margin: 0 0 10px;
+    color: var(--cinnabar);
+    font-weight: 700;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--teal);
+    font-size: 54px;
+    line-height: 1.1;
+  }
+
+  .button {
+    display: inline-block;
+    background: var(--teal);
+    color: var(--paper-2);
+    padding: 12px 18px;
+    text-decoration: none;
+  }
+</style>

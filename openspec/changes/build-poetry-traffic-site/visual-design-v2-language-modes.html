@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>诗词站视觉方向稿 v2：语言模式</title>
+  <style>
+    :root {
+      --paper: #f5eedc;
+      --paper-2: #fff9ea;
+      --ink: #1b1a17;
+      --muted: #6c6254;
+      --cinnabar: #a33625;
+      --teal: #123f3b;
+      --gold: #ad8436;
+      --line: rgba(27, 26, 23, 0.14);
+      --soft-teal: rgba(18, 63, 59, 0.08);
+      --soft-red: rgba(163, 54, 37, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(90deg, rgba(18, 63, 59, 0.08), transparent 42%),
+        radial-gradient(circle at 80% 0%, rgba(173, 132, 54, 0.2), transparent 28rem),
+        var(--paper);
+      color: var(--ink);
+      font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif;
+      line-height: 1.72;
+    }
+
+    .bar {
+      height: 6px;
+      background: linear-gradient(90deg, var(--teal), var(--gold), var(--cinnabar));
+    }
+
+    header {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 22px 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--teal);
+      font-weight: 800;
+    }
+
+    .seal {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      background: var(--cinnabar);
+      color: var(--paper-2);
+      border: 2px solid rgba(255, 249, 234, 0.6);
+      box-shadow: 0 0 0 1px var(--cinnabar);
+      font-size: 19px;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    main {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 12px 26px 72px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
+      gap: 34px;
+      align-items: stretch;
+      border-top: 1px solid var(--line);
+      padding-top: 34px;
+    }
+
+    .intro {
+      min-height: 560px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .kicker {
+      color: var(--cinnabar);
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 650px;
+      font-size: clamp(42px, 6vw, 78px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 660px;
+      color: var(--muted);
+      font-size: 18px;
+      margin: 22px 0 0;
+    }
+
+    .reader {
+      background: rgba(255, 249, 234, 0.72);
+      border: 1px solid var(--line);
+      box-shadow: 0 26px 80px rgba(27, 26, 23, 0.14);
+      padding: 22px;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      min-height: 560px;
+    }
+
+    .reader-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--teal);
+      font-size: 34px;
+      line-height: 1.2;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    .mode-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .tab {
+      border: 1px solid rgba(18, 63, 59, 0.28);
+      color: var(--teal);
+      background: rgba(18, 63, 59, 0.04);
+      padding: 7px 10px;
+      font-size: 13px;
+      min-width: 70px;
+      text-align: center;
+    }
+
+    .tab.active {
+      color: var(--paper-2);
+      background: var(--teal);
+    }
+
+    .helper-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .helper-switch {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .chip {
+      border: 1px solid rgba(163, 54, 37, 0.28);
+      color: var(--cinnabar);
+      background: var(--soft-red);
+      padding: 3px 8px;
+      font-size: 12px;
+    }
+
+    .poem-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+      padding-top: 24px;
+    }
+
+    .line {
+      padding: 4px 0 14px;
+      border-bottom: 1px solid rgba(27, 26, 23, 0.08);
+    }
+
+    .han {
+      font-size: 28px;
+      line-height: 1.55;
+    }
+
+    .sub {
+      margin-top: 5px;
+      color: var(--muted);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .zh-sub {
+      margin-top: 5px;
+      color: var(--cinnabar);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .bilingual-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: rgba(255, 249, 234, 0.56);
+      padding: 20px;
+      min-height: 220px;
+    }
+
+    .panel.en {
+      font-family: Georgia, "Times New Roman", serif;
+      background: var(--soft-teal);
+    }
+
+    .panel h3 {
+      margin: 0 0 12px;
+      color: var(--teal);
+      font-size: 19px;
+    }
+
+    .panel p {
+      margin: 0 0 10px;
+      color: var(--muted);
+    }
+
+    .section-title {
+      margin: 60px 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--teal);
+      font-size: 25px;
+    }
+
+    .section-title::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, rgba(18, 63, 59, 0.45), transparent);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: rgba(255, 249, 234, 0.56);
+      padding: 18px;
+      min-height: 168px;
+    }
+
+    .card strong {
+      display: block;
+      color: var(--cinnabar);
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 19px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .ad-slot {
+      margin-top: 18px;
+      border: 1px dashed rgba(108, 98, 84, 0.5);
+      padding: 12px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      text-align: center;
+      padding: 26px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 940px) {
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      nav {
+        justify-content: flex-start;
+      }
+
+      .hero,
+      .bilingual-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .intro,
+      .reader {
+        min-height: auto;
+      }
+
+      .reader-top,
+      .helper-row {
+        flex-direction: column;
+      }
+
+      .mode-tabs,
+      .helper-switch {
+        justify-content: flex-start;
+      }
+
+      .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 580px) {
+      main,
+      header {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .reader {
+        padding: 16px;
+      }
+
+      .han {
+        font-size: 23px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bar"></div>
+  <header>
+    <div class="brand">
+      <div class="seal">詩</div>
+      <div>
+        <div>未名诗阁</div>
+        <small>Chinese Poetry, Read in Two Languages</small>
+      </div>
+    </div>
+    <nav>
+      <span>Daily Poem</span>
+      <span>Poets</span>
+      <span>Themes</span>
+      <span>Collections</span>
+      <span>Subscribe</span>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="intro">
+        <div class="kicker">For global readers · 可配置语言阅读</div>
+        <h1>一首诗，可以中文读，也可以英文读</h1>
+        <p class="lead">页面不只做中英文切换。读者可以选择单中文、单英文、中英双文，也可以把英文或现代中文解释放在诗句下面，像拼音注释那样辅助阅读。这样更适合海外搜索用户，也不会牺牲中文读者的阅读感。</p>
+      </div>
+
+      <section class="reader">
+        <div class="reader-top">
+          <div>
+            <h2>静夜思 · Quiet Night Thoughts</h2>
+            <div class="meta">唐 · 李白 / Tang · Li Bai · 月夜 / homesickness</div>
+          </div>
+          <div class="mode-tabs">
+            <div class="tab">中文</div>
+            <div class="tab">English</div>
+            <div class="tab">双文</div>
+            <div class="tab active">行间注释</div>
+          </div>
+        </div>
+
+        <div class="helper-row">
+          <span>Helper line / 注释行</span>
+          <div class="helper-switch">
+            <span class="chip">English under Chinese</span>
+            <span class="chip">现代中文解释</span>
+            <span class="chip">Pinyin later</span>
+          </div>
+        </div>
+
+        <div class="poem-body">
+          <div class="line">
+            <div class="han">床前明月光，</div>
+            <div class="sub">Moonlight shines before my bed.</div>
+            <div class="zh-sub">现代中文：床前洒着明亮的月光。</div>
+          </div>
+          <div class="line">
+            <div class="han">疑是地上霜。</div>
+            <div class="sub">I almost think it is frost upon the ground.</div>
+            <div class="zh-sub">现代中文：恍惚间像地上结了一层霜。</div>
+          </div>
+          <div class="line">
+            <div class="han">举头望明月，</div>
+            <div class="sub">I lift my head and gaze at the bright moon.</div>
+            <div class="zh-sub">现代中文：抬头看见天上的明月。</div>
+          </div>
+          <div class="line">
+            <div class="han">低头思故乡。</div>
+            <div class="sub">I lower my head and think of home.</div>
+            <div class="zh-sub">现代中文：低下头时，乡愁又回到心里。</div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <h2 class="section-title">同一内容的三种主要页面形态</h2>
+    <section class="bilingual-grid">
+      <article class="panel">
+        <h3>中文阅读</h3>
+        <p>面向中文用户，保留原诗的节奏，把注释、今译、背景和赏析放在正文之后。广告位不插入诗句中间。</p>
+        <p>适合百度、中文自然搜索和国内读者分享。</p>
+      </article>
+      <article class="panel en">
+        <h3>English Reading</h3>
+        <p>For overseas readers, the page can lead with translation, context, themes, and a compact original Chinese block.</p>
+        <p>This avoids publishing a bare machine translation while still making the page understandable from search.</p>
+      </article>
+    </section>
+
+    <h2 class="section-title">配置项进入内容模型</h2>
+    <section class="cards">
+      <div class="card">
+        <strong>Mode 1</strong>
+        <h3>单中文</h3>
+        <p>原文、注释、今译、赏析，适合母语读者和中文 SEO。</p>
+      </div>
+      <div class="card">
+        <strong>Mode 2</strong>
+        <h3>English Only</h3>
+        <p>英译、背景、主题解释，保留原诗作为引用和文化来源。</p>
+      </div>
+      <div class="card">
+        <strong>Mode 3</strong>
+        <h3>中英双文</h3>
+        <p>左右或上下对照，适合学习、引用和海外读者深入阅读。</p>
+      </div>
+      <div class="card">
+        <strong>Mode 4</strong>
+        <h3>行间注释</h3>
+        <p>像拼音注释一样放辅助行，辅助行可选英文、现代中文，后续可加拼音。</p>
+      </div>
+    </section>
+
+    <div class="ad-slot">AdSense-ready placement: below reading module, disabled until configured</div>
+  </main>
+
+  <footer>
+    About · Privacy · Terms · Content Sources · RSS · Sitemap · Language Settings
+  </footer>
+</body>
+</html>

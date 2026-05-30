@@ -1,0 +1,149 @@
+---
+import { getPersonalizationConfig, getSubscriptionConfig } from "@/config/site";
+
+const subscription = getSubscriptionConfig();
+const personalization = getPersonalizationConfig();
+const formDisabled = !subscription.enabled;
+---
+
+<section class="subscription-panel" aria-labelledby="subscription-title">
+  <div>
+    <p class="kicker">Daily letter · 每日诗笺</p>
+    <h2 id="subscription-title">按兴趣收一首诗</h2>
+    <p class="copy">
+      选择你更常读的主题。订阅开放后，系统会按这些兴趣推荐每日诗词。
+    </p>
+  </div>
+
+  <form class="subscribe-form" method="post" action={subscription.enabled ? subscription.endpoint : "#"}>
+    <label>
+      <span>Email</span>
+      <input type="email" name="email" placeholder="reader@example.com" disabled={formDisabled} />
+    </label>
+
+    <fieldset>
+      <legend>Interests / 兴趣</legend>
+      <div class="interest-grid">
+        {subscription.interests.map((tag) => (
+          <label>
+            <input type="checkbox" name="interests" value={tag.slug} disabled={formDisabled} />
+            <span>{tag.labelZh} · {tag.labelEn}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+
+    <button type="submit" disabled={formDisabled}>Subscribe</button>
+    <p class="status">
+      {subscription.enabled ? "订阅入口已开放。" : "订阅即将开放，当前不会收集邮箱。"}
+    </p>
+    <p class="status" data-preference-key={personalization.preferenceStorageKey}>
+      登录和个人中心上线后，会继续沿用这些兴趣选择。
+    </p>
+  </form>
+</section>
+
+<style>
+  .subscription-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+    gap: 26px;
+    margin: 48px 0;
+    padding: 28px;
+    border: 1px solid var(--line);
+    background: rgba(255, 249, 234, 0.74);
+  }
+
+  .kicker {
+    margin: 0 0 10px;
+    color: var(--cinnabar);
+    font-weight: 700;
+  }
+
+  h2 {
+    margin: 0;
+    color: var(--teal);
+    font-size: 30px;
+    line-height: 1.2;
+  }
+
+  .copy {
+    color: var(--muted);
+  }
+
+  .subscribe-form {
+    display: grid;
+    gap: 16px;
+  }
+
+  label,
+  fieldset {
+    display: grid;
+    gap: 8px;
+  }
+
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  input[type="email"] {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    padding: 10px 12px;
+    font: inherit;
+  }
+
+  .interest-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .interest-grid label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 8px 10px;
+    border: 1px solid rgba(18, 63, 59, 0.18);
+    background: rgba(18, 63, 59, 0.04);
+    font-size: 14px;
+  }
+
+  button {
+    width: fit-content;
+    min-height: 44px;
+    border: 0;
+    background: var(--teal);
+    color: var(--paper-2);
+    padding: 10px 18px;
+    font: inherit;
+  }
+
+  button:disabled,
+  input:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+  }
+
+  .status {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  @media (max-width: 760px) {
+    .subscription-panel {
+      grid-template-columns: 1fr;
+      padding: 20px;
+    }
+
+    .interest-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

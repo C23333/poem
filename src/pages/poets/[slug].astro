@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const poets = await getCollection("poets");
+  return poets.map((poet) => ({ params: { slug: poet.slug }, props: { poet } }));
+}
+
+const { poet } = Astro.props;
+---
+
+<BaseLayout title={`${poet.data.name} - 诗人`} description={poet.data.summaryZh} canonicalPath={`/poets/${poet.slug}`}>
+  <h1>{poet.data.name}</h1>
+  <p>{poet.data.summaryZh}</p>
+  {poet.data.summaryEn && <p>{poet.data.summaryEn}</p>}
+</BaseLayout>

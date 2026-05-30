@@ -1,0 +1,48 @@
+---
+import { getReadingConfig, type ReadingMode } from "@/config/site";
+
+interface Props {
+  selected?: ReadingMode;
+}
+
+const reading = getReadingConfig();
+const selected = Astro.props.selected || reading.defaultMode;
+const labels: Record<ReadingMode, string> = {
+  zh: "中文",
+  en: "English",
+  bilingual: "双文",
+  interlinear: "行间注释"
+};
+---
+
+<div class="mode-tabs" role="group" aria-label="Reading mode">
+  {reading.modes.map((mode) => (
+    <button class:list={["tab", { active: mode === selected }]} type="button" data-reading-mode={mode}>
+      {labels[mode]}
+    </button>
+  ))}
+</div>
+
+<style>
+  .mode-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  .tab {
+    border: 1px solid rgba(18, 63, 59, 0.28);
+    color: var(--teal);
+    background: rgba(18, 63, 59, 0.04);
+    padding: 7px 10px;
+    font: inherit;
+    font-size: 13px;
+    min-width: 70px;
+  }
+
+  .tab.active {
+    color: var(--paper-2);
+    background: var(--teal);
+  }
+</style>

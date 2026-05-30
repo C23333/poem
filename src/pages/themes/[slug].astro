@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const themes = await getCollection("themes");
+  return themes.map((theme) => ({ params: { slug: theme.slug }, props: { theme } }));
+}
+
+const { theme } = Astro.props;
+---
+
+<BaseLayout title={`${theme.data.name} - 诗词主题`} description={theme.data.summaryZh} canonicalPath={`/themes/${theme.slug}`}>
+  <h1>{theme.data.name}</h1>
+  <p>{theme.data.summaryZh}</p>
+  {theme.data.summaryEn && <p>{theme.data.summaryEn}</p>}
+</BaseLayout>

@@ -1,0 +1,69 @@
+import { describe, expect, it } from "vitest";
+import {
+  AD_SLOTS,
+  getAnalyticsConfig,
+  getPersonalizationConfig,
+  getReadingConfig,
+  getSiteConfig,
+  getSubscriptionConfig,
+  INTEREST_TAGS,
+  READING_MODES
+} from "./site";
+
+describe("site configuration", () => {
+  it("defines supported reading modes in one place", () => {
+    expect(READING_MODES).toEqual(["zh", "en", "bilingual", "interlinear"]);
+  });
+
+  it("normalizes reading defaults from environment-like input", () => {
+    const config = getReadingConfig({
+      PUBLIC_DEFAULT_READING_MODE: "bilingual",
+      PUBLIC_DEFAULT_HELPER_LANGUAGE: "zh"
+    });
+
+    expect(config.defaultMode).toBe("bilingual");
+    expect(config.defaultHelperLanguage).toBe("zh");
+  });
+
+  it("falls back to safe reading defaults", () => {
+    const config = getReadingConfig({});
+
+    expect(config.defaultMode).toBe("interlinear");
+    expect(config.defaultHelperLanguage).toBe("en");
+  });
+
+  it("disables analytics providers when IDs are missing", () => {
+    expect(getAnalyticsConfig({}).ga4.enabled).toBe(false);
+    expect(getAnalyticsConfig({}).baiduTongji.enabled).toBe(false);
+  });
+
+  it("exposes named ad slots through shared config", () => {
+    expect(AD_SLOTS.poemAfterIntro.name).toBe("poem-after-intro");
+    expect(AD_SLOTS.sidebar.name).toBe("sidebar");
+  });
+
+  it("normalizes the canonical site URL without trailing slash", () => {
+    expect(getSiteConfig({ PUBLIC_SITE_URL: "https://poem.example/" }).url).toBe("https://poem.example");
+  });
+
+  it("defines interest tags for future personalization in one place", () => {
+    expect(INTEREST_TAGS.map((tag) => tag.slug)).toContain("homesickness");
+    expect(INTEREST_TAGS.every((tag) => tag.labelZh && tag.labelEn)).toBe(true);
+  });
+
+  it("keeps subscription disabled until both flag and endpoint exist", () => {
+    expect(getSubscriptionConfig({ PUBLIC_ENABLE_SUBSCRIPTION: "true" }).enabled).toBe(false);
+
+    expect(
+      getSubscriptionConfig({
+        PUBLIC_ENABLE_SUBSCRIPTION: "true",
+        PUBLIC_SUBSCRIPTION_ENDPOINT: "/api/subscribe"
+      }).enabled
+    ).toBe(true);
+  });
+
+  it("keeps personalization API behind explicit configuration", () => {
+    expect(getPersonalizationConfig({ PUBLIC_ENABLE_AI: "true" }).aiEndpoint).toBe("");
+    expect(getPersonalizationConfig({ PUBLIC_AI_ENDPOINT: "/api/ai/explain" }).aiEndpoint).toBe("/api/ai/explain");
+  });
+});

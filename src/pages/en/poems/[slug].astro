@@ -1,0 +1,53 @@
+---
+import { getCollection } from "astro:content";
+import PoemReader from "@/components/PoemReader.astro";
+import { getSiteConfig } from "@/config/site";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { hasEnglishAssets, isIndexablePoem } from "@/lib/content/poems";
+import { buildHreflangLinks, pageRobots } from "@/lib/seo/meta";
+import { poemJsonLd } from "@/lib/seo/structured-data";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const poems = await getCollection("poems");
+  return poems
+    .filter((poem) => hasEnglishAssets(poem))
+    .map((poem) => ({ params: { slug: poem.slug }, props: { poem } }));
+}
+
+const { poem } = Astro.props;
+const data = poem.data;
+const site = getSiteConfig();
+const poemPath = `/poems/${poem.slug}`;
+const englishPoemPath = `/en/poems/${poem.slug}`;
+---
+
+<BaseLayout
+  title={`${data.titleEn || data.title} - Chinese Poetry in English`}
+  description={data.commentaryEn || `Read ${data.titleEn || data.title} with translation and context.`}
+  canonicalPath={englishPoemPath}
+  robots={pageRobots(isIndexablePoem(poem) && hasEnglishAssets(poem))}
+  lang="en"
+  alternates={buildHreflangLinks(site.url, { zh: poemPath, en: englishPoemPath })}
+  jsonLd={poemJsonLd({
+    siteUrl: site.url,
+    path: englishPoemPath,
+    title: data.titleEn || data.title,
+    author: data.poet,
+    language: "en"
+  })}
+>
+  <PoemReader
+    title={data.title}
+    titleEn={data.titleEn}
+    poet={data.poet}
+    dynasty={data.dynasty}
+    themes={data.themes}
+    lines={data.lines}
+  />
+  <section class="section">
+    <h2 class="section-title">English Commentary</h2>
+    <p>{data.commentaryEn}</p>
+  </section>
+</BaseLayout>
