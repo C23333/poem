@@ -21,7 +21,7 @@ describe("user API route boundaries", () => {
   });
 
   it("keeps saved poems disabled by default", async () => {
-    await expectDisabled(await readSavedPoems(), "saved poems is disabled");
+    await expectDisabled(await readSavedPoems(emptyContext), "saved poems is disabled");
   });
 
   it("keeps comments disabled by default", async () => {

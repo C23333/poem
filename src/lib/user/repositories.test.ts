@@ -6,6 +6,7 @@ import {
   createSubscriptionStatement,
   createUserIdentityStatement,
   createUserStatement,
+  deleteSavedPoemStatement,
   findUserByEmailQuery,
   preferencesQuery,
   savePoemStatement,
@@ -85,6 +86,13 @@ describe("user engagement repositories", () => {
     expect(statement.sql).toContain("FROM saved_poems");
     expect(statement.sql).toContain("ORDER BY created_at DESC");
     expect(statement.params).toEqual(["user_1"]);
+  });
+
+  it("builds a saved poem delete statement", () => {
+    const statement = deleteSavedPoemStatement({ userId: "user_1", poemSlug: "jing-ye-si" });
+
+    expect(statement.sql).toContain("DELETE FROM saved_poems");
+    expect(statement.params).toEqual(["user_1", "jing-ye-si"]);
   });
 
   it("builds a reading history insert statement", () => {

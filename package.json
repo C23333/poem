@@ -10,6 +10,7 @@
     "check": "astro check",
     "test": "vitest run",
     "test:watch": "vitest",
+    "prebuild": "node scripts/generate-reviewed-poems.mjs",
     "validate:production": "node scripts/validate-production.mjs",
     "verify:content": "node scripts/verify-content.mjs",
     "verify:discovery": "node scripts/verify-discovery.mjs",

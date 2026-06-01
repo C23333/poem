@@ -31,7 +31,7 @@
 - [x] 4.3 Add disabled-by-default auth adapter and magic-link API boundary.
 - [x] 4.4 Add profile/personal-center route with anonymous login prompt.
 - [x] 4.5 Add preference save/read APIs and UI.
-- [ ] 4.6 Add saved poem toggle API and UI on reviewed poem pages.
+- [x] 4.6 Add saved poem toggle API and UI on reviewed poem pages.
 - [ ] 4.7 Add comment submit/list/moderation APIs with pending-by-default public behavior and rate limits.
 - [ ] 4.8 Add browser smoke tests for personal center, saved poem UI, and comment pending state.
 

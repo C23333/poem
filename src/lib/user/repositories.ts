@@ -78,6 +78,13 @@ export function savedPoemsQuery(userId: string): Statement {
   };
 }
 
+export function deleteSavedPoemStatement(input: { userId: string; poemSlug: string }): Statement {
+  return {
+    sql: "DELETE FROM saved_poems WHERE user_id = ? AND poem_slug = ?",
+    params: [input.userId, input.poemSlug]
+  };
+}
+
 export function createReadingHistoryStatement(input: {
   id: string;
   userId: string;

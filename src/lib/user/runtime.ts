@@ -7,6 +7,7 @@ export type D1Like = {
   prepare: (sql: string) => {
     bind: (...params: Array<string | number | null>) => {
       first: () => Promise<unknown>;
+      all: () => Promise<{ results?: unknown[] }>;
       run: () => Promise<unknown>;
     };
   };
