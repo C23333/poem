@@ -36,8 +36,13 @@ Copy `.env.example` to `.env` and set values as needed.
 - `PUBLIC_ENABLE_ADS`: enables ad rendering only when true and AdSense client exists.
 - `PUBLIC_ENABLE_SUBSCRIPTION`: enables the daily poem subscription form only when true.
 - `PUBLIC_SUBSCRIPTION_ENDPOINT`: future subscription API endpoint. Empty means the form is disabled.
-- `PUBLIC_ENABLE_AI`: enables future AI features only when true.
-- `PUBLIC_AI_ENDPOINT`: future AI endpoint for explanation or recommendation features.
+- `PUBLIC_ENABLE_AI`: enables AI editorial APIs only when true and server-side provider variables are complete.
+- `PUBLIC_AI_ENDPOINT`: future public personalization endpoint placeholder; the current server-side AI draft route does not use it.
+- `AI_PROVIDER_ENDPOINT`: server-side AI provider endpoint for editorial draft generation.
+- `AI_PROVIDER_MODEL`: server-side AI model name.
+- `AI_PROVIDER_TOKEN`: server-side AI provider token. Do not expose this as a `PUBLIC_` variable.
+- `AI_DAILY_DRAFT_LIMIT`: explicit per-editor daily draft limit; missing or invalid values keep AI disabled.
+- `AI_PROMPT_VERSION`: prompt version string stored with every AI draft.
 - `INDEXNOW_KEY`: future IndexNow key; no URL submission runs unless a real key is configured.
 - `BAIDU_SUBMIT_TOKEN`: future Baidu Search Resource Platform push token; missing token must fail submission instead of silently skipping.
 
@@ -139,7 +144,7 @@ Monetization readiness before applying:
 
 The first release includes a daily poem route and a disabled-by-default subscription UI. Interest tags live in `src/config/site.ts`, so later email, login, and personal-center features can reuse the same preference vocabulary.
 
-No email provider or AI provider is called in the MVP. Configure those through `PUBLIC_SUBSCRIPTION_ENDPOINT` and `PUBLIC_AI_ENDPOINT` after the provider and cost rules are selected.
+No email provider is called yet. Configure subscription delivery through `PUBLIC_SUBSCRIPTION_ENDPOINT` only after the provider and cost rules are selected. AI provider calls are limited to moderator/admin draft APIs and remain disabled unless `PUBLIC_ENABLE_AI`, `AI_PROVIDER_ENDPOINT`, `AI_PROVIDER_MODEL`, `AI_PROVIDER_TOKEN`, and `AI_DAILY_DRAFT_LIMIT` are all configured.
 
 Account-ready routes and data boundaries now exist but stay disabled by default:
 
@@ -163,6 +168,24 @@ When disabled, these APIs return explicit `503` JSON. Comments are designed to b
 `/api/preferences` can read and save preferences once `PUBLIC_ENABLE_PERSONAL_CENTER=true`, `locals.user` is populated by a real auth layer, and the `POETRY_DB` D1 binding is available. Without authentication it returns `401`; without D1 it returns `501`.
 
 AI editorial routes also stay disabled by default. `/api/ai/drafts` returns `503` unless `PUBLIC_ENABLE_AI=true` and the provider endpoint, model, token, and daily draft limit are configured. When enabled, the route requires a moderator/admin `locals.user`, `POETRY_DB`, and `POETRY_RATE_LIMIT`; it can generate `explanation`, `translation`, `line-notes`, and `related-poems` drafts, store them in D1 with prompt/model/hash metadata, and return `202`. Basic quality checks can mark output as `needs-review` for empty text, missing source notes around historical claims, duplicate source text, or length problems. `/api/ai/drafts/review` can mark a draft `approved`, `rejected`, or `needs-review` with reviewer metadata, but it still returns `published: false`. These checks and review states are editorial aids only; they do not prove factual correctness and do not publish generated text.
+
+## AI Editorial Policy
+
+Provider selection is intentionally not hard-coded. The current adapter expects an OpenAI-compatible HTTP endpoint that accepts the configured model, prompt version, task, poem slug, and source text, then returns JSON with a `text` field. Pick a live provider only after approving cost, data retention, regional availability, and whether poem/commentary drafts can be sent to that provider.
+
+Cost controls:
+
+- Keep `PUBLIC_ENABLE_AI=false` until the provider account, token, D1, and KV bindings are ready.
+- Set `AI_DAILY_DRAFT_LIMIT` to a small number for preview, then raise it only after reviewing real usage.
+- Keep `AI_PROVIDER_TOKEN` server-side only; never use a `PUBLIC_` token.
+- Monitor provider billing outside the repo. The local checks only enforce request boundaries and daily counters.
+
+Review policy:
+
+- AI output is stored in `ai_drafts`; it is not read by public poem pages, sitemap, RSS, IndexNow, or Baidu submission.
+- Quality checks can mark risky drafts as `needs-review`, but they are not factual verification.
+- `approved` means a moderator/admin accepted the draft for later editorial use. It does not publish the text.
+- To publish AI-assisted text, an editor must manually move the reviewed wording into repo-managed content, keep source/license/review metadata, and rerun `npm run verify:content`, `npm run verify:discovery`, and `npm run build`.
 
 ## Cloudflare Deployment
 

@@ -42,7 +42,7 @@
 - [x] 5.3 Add draft generation APIs for explanation, translation, line notes, and related-poem suggestions.
 - [x] 5.4 Add quality checks for empty output, unsupported claims, missing source notes, duplicate text, and length boundaries.
 - [x] 5.5 Add review flow that can promote AI draft content only after human approval.
-- [ ] 5.6 Add README section for provider selection, cost control, review policy, and no automatic publication.
+- [x] 5.6 Add README section for provider selection, cost control, review policy, and no automatic publication.
 
 ## 6. Monetization Compliance
 
