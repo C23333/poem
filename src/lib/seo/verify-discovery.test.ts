@@ -39,6 +39,19 @@ describe("verifyDiscovery", () => {
     );
   });
 
+  it("rejects personal center URLs in sitemap output", async () => {
+    const dist = await createDist({
+      "robots.txt": "Sitemap: https://poem.example/sitemap-index.xml\n",
+      "rss.xml": "<rss></rss>",
+      "sitemap-0.xml": "<urlset><url><loc>https://poem.example/me/</loc></url></urlset>",
+      "index.html": "<html></html>"
+    });
+
+    await expect(verifyDiscovery({ distDir: dist })).resolves.toContain(
+      "sitemap-0.xml must not contain noindex personal center URLs."
+    );
+  });
+
   it("rejects unparsable JSON-LD blocks", async () => {
     const dist = await createDist({
       "robots.txt": "Sitemap: https://poem.example/sitemap-index.xml\n",

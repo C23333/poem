@@ -110,8 +110,9 @@ export function getFeatureConfig(env: EnvLike = import.meta.env) {
   return {
     subscription: boolValue(env.PUBLIC_ENABLE_SUBSCRIPTION),
     ai: boolValue(env.PUBLIC_ENABLE_AI),
-    login: false,
-    personalCenter: false
+    login: boolValue(env.PUBLIC_ENABLE_LOGIN),
+    personalCenter: boolValue(env.PUBLIC_ENABLE_PERSONAL_CENTER),
+    comments: boolValue(env.PUBLIC_ENABLE_COMMENTS)
   };
 }
 
@@ -130,8 +131,8 @@ export function getPersonalizationConfig(env: EnvLike = import.meta.env) {
     aiEnabled: boolValue(env.PUBLIC_ENABLE_AI) && Boolean(env.PUBLIC_AI_ENDPOINT),
     aiEndpoint: env.PUBLIC_AI_ENDPOINT || "",
     preferenceStorageKey: "poetry-reader-interests",
-    loginEnabled: false,
-    personalCenterEnabled: false
+    loginEnabled: boolValue(env.PUBLIC_ENABLE_LOGIN),
+    personalCenterEnabled: boolValue(env.PUBLIC_ENABLE_PERSONAL_CENTER)
   };
 }
 

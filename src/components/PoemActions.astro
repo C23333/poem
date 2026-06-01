@@ -1,0 +1,74 @@
+---
+import { getFeatureConfig } from "@/config/site";
+
+interface Props {
+  poemSlug: string;
+}
+
+const features = getFeatureConfig();
+const { poemSlug } = Astro.props;
+---
+
+<section class="poem-actions" aria-label="Reader actions">
+  <div>
+    <h2 class="section-title">收藏与评论</h2>
+    {!features.personalCenter ? (
+      <p>收藏和评论已经预留账号数据结构，当前环境未启用登录服务。</p>
+    ) : (
+      <form method="post" action="/api/saved-poems">
+        <input type="hidden" name="poemSlug" value={poemSlug} />
+        <button type="submit">Save poem</button>
+      </form>
+    )}
+  </div>
+  <div>
+    {!features.comments ? (
+      <p>评论默认关闭。启用后，新评论会先进入审核，不会直接公开。</p>
+    ) : (
+      <form method="post" action="/api/comments">
+        <input type="hidden" name="poemSlug" value={poemSlug} />
+        <label>
+          Comment
+          <textarea name="body" rows="4" required></textarea>
+        </label>
+        <button type="submit">Submit for review</button>
+      </form>
+    )}
+  </div>
+</section>
+
+<style>
+  .poem-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    border: 1px solid var(--line);
+    background: rgba(255, 249, 234, 0.58);
+    padding: 18px;
+  }
+
+  form,
+  label {
+    display: grid;
+    gap: 10px;
+  }
+
+  textarea {
+    border: 1px solid var(--line);
+    padding: 12px;
+  }
+
+  button {
+    width: fit-content;
+    border: 0;
+    background: var(--teal);
+    color: var(--paper-2);
+    padding: 10px 14px;
+  }
+
+  @media (max-width: 820px) {
+    .poem-actions {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

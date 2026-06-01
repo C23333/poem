@@ -26,10 +26,10 @@
 
 ## 4. User Engagement
 
-- [ ] 4.1 Add D1 migrations for users, identities, preferences, saved poems, reading history, subscriptions, comments, and moderation events.
-- [ ] 4.2 Add repository tests and implementations for each D1 table.
-- [ ] 4.3 Add disabled-by-default auth adapter and magic-link API boundary.
-- [ ] 4.4 Add profile/personal-center route with anonymous login prompt.
+- [x] 4.1 Add D1 migrations for users, identities, preferences, saved poems, reading history, subscriptions, comments, and moderation events.
+- [x] 4.2 Add repository tests and implementations for each D1 table.
+- [x] 4.3 Add disabled-by-default auth adapter and magic-link API boundary.
+- [x] 4.4 Add profile/personal-center route with anonymous login prompt.
 - [ ] 4.5 Add preference save/read APIs and UI.
 - [ ] 4.6 Add saved poem toggle API and UI on reviewed poem pages.
 - [ ] 4.7 Add comment submit/list/moderation APIs with pending-by-default public behavior and rate limits.

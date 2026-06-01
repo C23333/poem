@@ -138,7 +138,26 @@ Monetization readiness before applying:
 
 The first release includes a daily poem route and a disabled-by-default subscription UI. Interest tags live in `src/config/site.ts`, so later email, login, and personal-center features can reuse the same preference vocabulary.
 
-No email provider, account system, or AI provider is called in the MVP. Configure those through `PUBLIC_SUBSCRIPTION_ENDPOINT` and `PUBLIC_AI_ENDPOINT` after the provider and cost rules are selected.
+No email provider or AI provider is called in the MVP. Configure those through `PUBLIC_SUBSCRIPTION_ENDPOINT` and `PUBLIC_AI_ENDPOINT` after the provider and cost rules are selected.
+
+Account-ready routes and data boundaries now exist but stay disabled by default:
+
+- D1 migration: `migrations/0001_user_engagement.sql`
+- Personal center: `/me`
+- Login API boundary: `/api/auth/magic-link`
+- Preferences API boundary: `/api/preferences`
+- Saved poems API boundary: `/api/saved-poems`
+- Comments API boundary: `/api/comments`
+
+Use these flags only after a real auth/email plan and D1 binding IDs are configured:
+
+```dotenv
+PUBLIC_ENABLE_LOGIN=true
+PUBLIC_ENABLE_PERSONAL_CENTER=true
+PUBLIC_ENABLE_COMMENTS=true
+```
+
+When disabled, these APIs return explicit `503` JSON. Comments are designed to be stored as `pending` first and only approved comments can be read for public pages.
 
 ## Cloudflare Deployment
 
@@ -216,13 +235,17 @@ Implemented in this branch:
 - content and discovery verification scripts
 - IndexNow key route and submit command
 - Baidu URL submission command
+- D1 migration and repository SQL for users, identities, preferences, saved poems, reading history, subscriptions, comments, and moderation events
+- disabled-by-default login, personal-center, saved-poem, and comment API boundaries, with explicit `503`/`501` responses for disabled or unwired features
+- `/me` personal center route with an anonymous/login-disabled prompt
 - config-driven `ads.txt`
 - real contact/privacy/terms pages
 - Cloudflare binding skeleton in `wrangler.toml`
 
 Still not implemented:
 
-- login, personal center, saved poems, comments, moderation APIs
+- real login sessions, profile data reads, saved-poem persistence, comments, and moderation APIs
+- real magic-link email delivery and authenticated sessions
 - real daily email delivery
 - real AI provider calls and editorial review UI
 - Node 22/Astro 6 security-upgrade pass

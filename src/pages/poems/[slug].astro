@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import AdSlot from "@/components/AdSlot.astro";
+import PoemActions from "@/components/PoemActions.astro";
 import PoemReader from "@/components/PoemReader.astro";
 import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -58,6 +59,7 @@ const poetName = displayPoetName(poem, poets);
     <p>{data.explanationZh}</p>
     <p>{data.commentaryZh}</p>
   </section>
+  <PoemActions poemSlug={poem.slug} />
   <section class="section">
     <h2 class="section-title">来源与审校</h2>
     <p>{data.source}</p>

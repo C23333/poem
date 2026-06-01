@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isNoindexSitemapUrl } from "../src/lib/seo/sitemap-rules.js";
 
 async function walkFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -51,6 +52,9 @@ export async function verifyDiscovery(options = {}) {
     const sitemap = await readFile(sitemapPath, "utf8");
     if (sitemap.includes("/poems/jiang-ye")) {
       errors.push("sitemap-0.xml must not contain the non-indexable poem jiang-ye.");
+    }
+    if (Array.from(sitemap.matchAll(/<loc>(.*?)<\/loc>/g)).some((match) => isNoindexSitemapUrl(match[1].trim()))) {
+      errors.push("sitemap-0.xml must not contain noindex personal center URLs.");
     }
 
     if (productionMode) {

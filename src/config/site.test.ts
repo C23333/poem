@@ -4,6 +4,7 @@ import {
   getAdsConfig,
   getAdSlotRenderState,
   getAnalyticsConfig,
+  getFeatureConfig,
   getPersonalizationConfig,
   getProductionConfig,
   getReadingConfig,
@@ -69,6 +70,21 @@ describe("site configuration", () => {
   it("keeps personalization API behind explicit configuration", () => {
     expect(getPersonalizationConfig({ PUBLIC_ENABLE_AI: "true" }).aiEndpoint).toBe("");
     expect(getPersonalizationConfig({ PUBLIC_AI_ENDPOINT: "/api/ai/explain" }).aiEndpoint).toBe("/api/ai/explain");
+  });
+
+  it("keeps account features disabled unless explicitly configured", () => {
+    expect(getFeatureConfig({}).login).toBe(false);
+    expect(
+      getFeatureConfig({
+        PUBLIC_ENABLE_LOGIN: "true",
+        PUBLIC_ENABLE_PERSONAL_CENTER: "true",
+        PUBLIC_ENABLE_COMMENTS: "true"
+      })
+    ).toMatchObject({
+      login: true,
+      personalCenter: true,
+      comments: true
+    });
   });
 
   it("marks the example domain as unsafe for production", () => {

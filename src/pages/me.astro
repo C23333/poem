@@ -1,0 +1,114 @@
+---
+import { getFeatureConfig, getReadingConfig, INTEREST_TAGS } from "@/config/site";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+export const prerender = true;
+
+const features = getFeatureConfig();
+const reading = getReadingConfig();
+---
+
+<BaseLayout
+  title="个人中心 - 未名诗阁"
+  description="Manage poetry reading preferences, saved poems, and subscriptions."
+  canonicalPath="/me"
+  robots="noindex,follow"
+>
+  <section class="section">
+    <h1>个人中心</h1>
+    {!features.login ? (
+      <div class="panel">
+        <p class="kicker">Account features are disabled</p>
+        <p>登录、收藏、评论和个人偏好已经有数据结构和 API 边界，但当前环境没有启用登录服务。</p>
+        <p>启用后，这里会展示阅读模式、兴趣标签、收藏诗词、阅读历史和邮件订阅状态。</p>
+      </div>
+    ) : (
+      <div class="panel">
+        <p class="kicker">Sign in required</p>
+        <p>请输入邮箱接收登录链接。未登录时不会展示私人数据。</p>
+        <form method="post" action="/api/auth/magic-link">
+          <label>
+            Email
+            <input type="email" name="email" autocomplete="email" required />
+          </label>
+          <button type="submit">Send magic link</button>
+        </form>
+      </div>
+    )}
+  </section>
+
+  <section class="section grid">
+    <div>
+      <h2 class="section-title">阅读偏好</h2>
+      <p>默认模式：{reading.defaultMode}</p>
+      <p>默认注释语言：{reading.defaultHelperLanguage}</p>
+    </div>
+    <div>
+      <h2 class="section-title">兴趣标签</h2>
+      <div class="tags">
+        {INTEREST_TAGS.map((tag) => <span>{tag.labelZh} · {tag.labelEn}</span>)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  h1 {
+    color: var(--teal);
+    font-size: 48px;
+  }
+
+  .panel {
+    border: 1px solid var(--line);
+    background: rgba(255, 249, 234, 0.68);
+    max-width: 760px;
+    padding: 20px;
+  }
+
+  .kicker {
+    color: var(--cinnabar);
+    font-weight: 700;
+  }
+
+  form,
+  label {
+    display: grid;
+    gap: 10px;
+  }
+
+  input {
+    border: 1px solid var(--line);
+    padding: 12px;
+  }
+
+  button {
+    width: fit-content;
+    border: 0;
+    background: var(--teal);
+    color: var(--paper-2);
+    padding: 12px 18px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .tags span {
+    border: 1px solid var(--line);
+    padding: 8px 10px;
+  }
+
+  @media (max-width: 820px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

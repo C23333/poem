@@ -1,4 +1,5 @@
 import { isValidIndexNowKey } from "./indexnow.js";
+import { isPublicSitemapUrl } from "../seo/sitemap-rules.js";
 
 const NON_INDEXABLE_URL_SEGMENTS = ["/poems/jiang-ye/"];
 
@@ -13,7 +14,7 @@ export function extractSitemapUrls(xml) {
 }
 
 export function filterReviewedSubmissionUrls(urls) {
-  return urls.filter((url) => !NON_INDEXABLE_URL_SEGMENTS.some((segment) => url.includes(segment)));
+  return urls.filter((url) => isPublicSitemapUrl(url) && !NON_INDEXABLE_URL_SEGMENTS.some((segment) => url.includes(segment)));
 }
 
 function normalizedEndpoint(endpoint) {
