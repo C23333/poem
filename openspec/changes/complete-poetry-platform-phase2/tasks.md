@@ -54,11 +54,24 @@
 
 ## 7. Verification And Release
 
-- [ ] 7.1 Run `npm test`.
-- [ ] 7.2 Run `npm run check`.
-- [ ] 7.3 Run `npm run build`.
-- [ ] 7.4 Run production environment validation in preview mode.
-- [ ] 7.5 Run content verification.
-- [ ] 7.6 Run discovery verification on `dist`.
-- [ ] 7.7 Run browser smoke on homepage, poem page, English poem page, index/search page, personal center, comment form, and subscription form.
-- [ ] 7.8 Record remaining unverified external items: GitHub push, domain, Cloudflare project, Search Console, Bing, Baidu, AdSense, Baidu Union, email provider, AI provider.
+- [x] 7.1 Run `npm test`.
+  - 2026-06-01: `npm test` passed, 31 files / 158 tests.
+- [x] 7.2 Run `npm run check`.
+  - 2026-06-01: `npm run check` passed, 0 errors / 0 warnings / 0 hints.
+- [x] 7.3 Run `npm run build`.
+  - 2026-06-01: `npm run build` passed after running it by itself. A prior parallel `check` + `build` attempt failed with `ENOTEMPTY` in `node_modules/.vite/deps`, caused by concurrent Vite cache work.
+- [x] 7.4 Run production environment validation in preview mode.
+  - 2026-06-01: `PUBLIC_SITE_URL=https://poem.example npm run validate:production` passed.
+- [x] 7.5 Run content verification.
+  - 2026-06-01: `npm run verify:content` passed.
+- [x] 7.6 Run discovery verification on `dist`.
+  - 2026-06-01: `npm run verify:discovery` passed.
+- [x] 7.7 Run browser smoke on homepage, poem page, English poem page, index/search page, personal center, comment form, and subscription form.
+  - 2026-06-01: `SMOKE_BASE_URL=http://127.0.0.1:4328 npm run smoke:user` passed.
+  - 2026-06-01: Playwright browser smoke checked `/`, `/poems/jing-ye-si/`, `/en/poems/jing-ye-si/`, `/poems/`, and `/me`.
+  - 2026-06-01: `/me` had `robots=noindex,follow`; subscription button stayed disabled with the no-email-collection message; disabled comments API returned explicit `503`.
+  - 2026-06-01: Codex in-app browser runtime could not start because the local Windows sandbox failed during browser setup, so the browser smoke was completed with the available Playwright browser tool instead.
+- [x] 7.8 Record remaining unverified external items: GitHub push, domain, Cloudflare project, Search Console, Bing, Baidu, AdSense, Baidu Union, email provider, AI provider.
+  - GitHub push status is verified by the final pushed branch/commit handoff.
+  - Real production domain, Cloudflare Pages project, real D1/KV IDs, Google Search Console, Bing Webmaster Tools, Baidu Search Resource Platform, AdSense approval, Baidu Union approval, live email provider, and live AI provider were not verified locally.
+  - Node 22 / Astro 6 upgrade and `npm audit` remediation remain separate approved work.

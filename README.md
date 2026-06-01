@@ -262,6 +262,47 @@ After build, inspect:
 - representative poem page HTML
 - mobile and desktop screenshots
 
+### Verification Snapshot: 2026-06-01
+
+Latest local verification on branch `codex/build-poetry-traffic-site`:
+
+```powershell
+npm test
+npm run check
+npm run build
+npm run verify:content
+npm run verify:discovery
+npm run verify:ads
+$env:PUBLIC_SITE_URL="https://poem.example"; npm run validate:production
+$env:SMOKE_BASE_URL="http://127.0.0.1:4328"; npm run smoke:user
+```
+
+Results:
+
+- `npm test`: passed, 31 test files / 158 tests.
+- `npm run check`: passed, 0 errors / 0 warnings / 0 hints.
+- `npm run build`: passed, generated 5 reviewed poem slugs and built Cloudflare server output.
+- `npm run verify:content`: passed.
+- `npm run verify:discovery`: passed against `dist`.
+- `npm run verify:ads`: passed.
+- `npm run validate:production`: passed with preview placeholder `https://poem.example`.
+- `npm run smoke:user`: passed against local Astro dev server.
+- Browser smoke checked `/`, `/poems/jing-ye-si/`, `/en/poems/jing-ye-si/`, `/poems/`, and `/me`; `/me` stayed `noindex,follow`, subscription stayed disabled, and disabled comment APIs returned explicit `503`.
+
+One failed build attempt during verification came from running `npm run check` and `npm run build` at the same time. Both processes touched Vite cache under `node_modules/.vite/deps`, causing `ENOTEMPTY`. Running `npm run build` by itself passed.
+
+This means the branch is ready for a Cloudflare preview deployment after environment variables and placeholder bindings are set. It is not a verified production launch yet.
+
+Still unverified outside the local repo:
+
+- real production domain and DNS
+- Cloudflare Pages project, preview deployment, production deployment, and real D1/KV namespace IDs
+- Google Search Console, Bing Webmaster Tools, Baidu Search Resource Platform, sitemap submission, IndexNow hosting, and Baidu push token
+- AdSense approval, Baidu Union approval, and live `ads.txt` publisher record
+- live email provider, magic-link delivery, subscription delivery, and authenticated session flow
+- live AI provider credentials, data-retention review, billing limits, and full editorial UI
+- Node 22 / Astro 6 compatibility pass and follow-up `npm audit` remediation
+
 ## Current Phase 2A Status
 
 Implemented in this branch:
