@@ -162,6 +162,8 @@ When disabled, these APIs return explicit `503` JSON. Comments are designed to b
 
 `/api/preferences` can read and save preferences once `PUBLIC_ENABLE_PERSONAL_CENTER=true`, `locals.user` is populated by a real auth layer, and the `POETRY_DB` D1 binding is available. Without authentication it returns `401`; without D1 it returns `501`.
 
+AI editorial routes also stay disabled by default. `/api/ai/drafts` returns `503` unless `PUBLIC_ENABLE_AI=true` and the provider endpoint, model, token, and daily draft limit are configured. The current adapter only creates draft payloads; it does not publish generated text.
+
 ## Cloudflare Deployment
 
 Deploy to Cloudflare Pages with:
@@ -246,6 +248,7 @@ Implemented in this branch:
 - preference read/save API wired to authenticated `locals.user` plus Cloudflare D1
 - saved-poem read/save/delete API wired to authenticated `locals.user`, Cloudflare D1, and reviewed-poem slug validation
 - comment read/submit/moderation APIs with approved-only public reads, pending-by-default submissions, and KV-backed rate-limit boundary
+- disabled-by-default AI provider config, adapter tests, and draft API boundary
 - config-driven `ads.txt`
 - real contact/privacy/terms pages
 - Cloudflare binding skeleton in `wrangler.toml`

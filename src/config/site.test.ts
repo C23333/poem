@@ -4,6 +4,7 @@ import {
   getAdsConfig,
   getAdSlotRenderState,
   getAnalyticsConfig,
+  getAiProviderConfig,
   getFeatureConfig,
   getPersonalizationConfig,
   getProductionConfig,
@@ -70,6 +71,24 @@ describe("site configuration", () => {
   it("keeps personalization API behind explicit configuration", () => {
     expect(getPersonalizationConfig({ PUBLIC_ENABLE_AI: "true" }).aiEndpoint).toBe("");
     expect(getPersonalizationConfig({ PUBLIC_AI_ENDPOINT: "/api/ai/explain" }).aiEndpoint).toBe("/api/ai/explain");
+  });
+
+  it("keeps AI provider disabled until endpoint, model, token, and usage limits exist", () => {
+    expect(getAiProviderConfig({ PUBLIC_ENABLE_AI: "true" }).enabled).toBe(false);
+    expect(
+      getAiProviderConfig({
+        PUBLIC_ENABLE_AI: "true",
+        AI_PROVIDER_ENDPOINT: "https://ai.example/v1",
+        AI_PROVIDER_MODEL: "poetry-model",
+        AI_PROVIDER_TOKEN: "token",
+        AI_DAILY_DRAFT_LIMIT: "25"
+      })
+    ).toMatchObject({
+      enabled: true,
+      endpoint: "https://ai.example/v1",
+      model: "poetry-model",
+      dailyDraftLimit: 25
+    });
   });
 
   it("keeps account features disabled unless explicitly configured", () => {

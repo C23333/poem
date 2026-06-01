@@ -37,7 +37,7 @@
 
 ## 5. AI Editorial Workflow
 
-- [ ] 5.1 Add AI provider config and disabled-by-default adapter tests.
+- [x] 5.1 Add AI provider config and disabled-by-default adapter tests.
 - [ ] 5.2 Add AI draft D1 table/repository and prompt version metadata.
 - [ ] 5.3 Add draft generation APIs for explanation, translation, line notes, and related-poem suggestions.
 - [ ] 5.4 Add quality checks for empty output, unsupported claims, missing source notes, duplicate text, and length boundaries.

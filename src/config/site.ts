@@ -21,6 +21,11 @@ function boolValue(value: string | undefined): boolean {
   return value === "true";
 }
 
+function positiveInt(value: string | undefined, fallback: number): number {
+  const parsed = Number.parseInt(value || "", 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
 function readingMode(value: string | undefined): ReadingMode {
   return READING_MODES.includes(value as ReadingMode) ? (value as ReadingMode) : "interlinear";
 }
@@ -133,6 +138,22 @@ export function getPersonalizationConfig(env: EnvLike = import.meta.env) {
     preferenceStorageKey: "poetry-reader-interests",
     loginEnabled: boolValue(env.PUBLIC_ENABLE_LOGIN),
     personalCenterEnabled: boolValue(env.PUBLIC_ENABLE_PERSONAL_CENTER)
+  };
+}
+
+export function getAiProviderConfig(env: EnvLike = import.meta.env) {
+  const endpoint = env.AI_PROVIDER_ENDPOINT || "";
+  const model = env.AI_PROVIDER_MODEL || "";
+  const token = env.AI_PROVIDER_TOKEN || "";
+  const dailyDraftLimit = positiveInt(env.AI_DAILY_DRAFT_LIMIT, 10);
+
+  return {
+    enabled: boolValue(env.PUBLIC_ENABLE_AI) && Boolean(endpoint && model && token && dailyDraftLimit),
+    endpoint,
+    model,
+    token,
+    dailyDraftLimit,
+    promptVersion: env.AI_PROMPT_VERSION || "poetry-editorial-v1"
   };
 }
 
