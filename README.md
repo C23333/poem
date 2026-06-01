@@ -84,9 +84,10 @@ Current discovery checks:
 ```powershell
 npm run verify:content
 npm run verify:discovery
+npm run smoke:user
 ```
 
-`verify:content` checks reviewed/published poems for value-added fields, source/license metadata, duplicate canonical slugs, and related-poem references. `verify:discovery` checks built `dist` output for sitemap, robots, RSS, sitemap exclusion of thin pages, and parseable JSON-LD.
+`verify:content` checks reviewed/published poems for value-added fields, source/license metadata, duplicate canonical slugs, and related-poem references. `verify:discovery` checks built `dist` output for sitemap, robots, RSS, sitemap exclusion of thin pages, and parseable JSON-LD. `smoke:user` expects a local server at `SMOKE_BASE_URL` or `http://127.0.0.1:4327` and checks `/me`, poem actions, and disabled user APIs.
 
 Search submission commands are explicit and never run automatically during build:
 
@@ -215,6 +216,7 @@ npm test
 npm run build
 npm run verify:content
 npm run verify:discovery
+npm run smoke:user
 ```
 
 After build, inspect:
@@ -235,6 +237,7 @@ Implemented in this branch:
 - dynasty, collection, article, poem index, poet index, and theme index pages
 - expanded JSON-LD for site, breadcrumbs, people, collections, articles, and poems
 - content and discovery verification scripts
+- repeatable user-engagement smoke script for `/me`, poem actions, and disabled API boundaries
 - IndexNow key route and submit command
 - Baidu URL submission command
 - D1 migration and repository SQL for users, identities, preferences, saved poems, reading history, subscriptions, comments, and moderation events
