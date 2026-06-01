@@ -4,42 +4,50 @@ import AdSlot from "@/components/AdSlot.astro";
 import PoemReader from "@/components/PoemReader.astro";
 import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { isIndexablePoem } from "@/lib/content/poems";
+import { displayPoetName, isIndexablePoem } from "@/lib/content/poems";
 import { buildHreflangLinks, pageRobots } from "@/lib/seo/meta";
-import { poemJsonLd } from "@/lib/seo/structured-data";
+import { breadcrumbJsonLd, poemJsonLd } from "@/lib/seo/structured-data";
 
 export const prerender = true;
 
 export async function getStaticPaths() {
   const poems = await getCollection("poems");
-  return poems.filter(isIndexablePoem).map((poem) => ({ params: { slug: poem.slug }, props: { poem } }));
+  const poets = await getCollection("poets");
+  return poems.filter(isIndexablePoem).map((poem) => ({ params: { slug: poem.slug }, props: { poem, poets } }));
 }
 
-const { poem } = Astro.props;
+const { poem, poets } = Astro.props;
 const data = poem.data;
 const site = getSiteConfig();
 const poemPath = `/poems/${poem.slug}`;
 const englishPoemPath = `/en/poems/${poem.slug}`;
+const poetName = displayPoetName(poem, poets);
 ---
 
 <BaseLayout
-  title={`${data.title} - ${data.poet} - 未名诗阁`}
+  title={`${data.title} - ${poetName.zh} - 未名诗阁`}
   description={data.explanationZh || `${data.title} 原文、注释、今译和赏析。`}
   canonicalPath={poemPath}
   robots={pageRobots(isIndexablePoem(poem))}
   alternates={buildHreflangLinks(site.url, { zh: poemPath, en: englishPoemPath })}
-  jsonLd={poemJsonLd({
-    siteUrl: site.url,
-    path: poemPath,
-    title: data.title,
-    author: data.poet,
-    language: "zh-CN"
-  })}
+  jsonLd={[
+    poemJsonLd({
+      siteUrl: site.url,
+      path: poemPath,
+      title: data.title,
+      author: poetName.zh,
+      language: "zh-CN"
+    }),
+    breadcrumbJsonLd(site.url, [
+      { name: "Poems", path: "/poems" },
+      { name: data.title, path: poemPath }
+    ])
+  ]}
 >
   <PoemReader
     title={data.title}
     titleEn={data.titleEn}
-    poet={data.poet}
+    poet={poetName.zh}
     dynasty={data.dynasty}
     themes={data.themes}
     lines={data.lines}

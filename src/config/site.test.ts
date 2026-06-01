@@ -1,9 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   AD_SLOTS,
+  getAdsConfig,
+  getAdSlotRenderState,
   getAnalyticsConfig,
   getPersonalizationConfig,
+  getProductionConfig,
   getReadingConfig,
+  getSearchSubmissionConfig,
   getSiteConfig,
   getSubscriptionConfig,
   INTEREST_TAGS,
@@ -65,5 +69,41 @@ describe("site configuration", () => {
   it("keeps personalization API behind explicit configuration", () => {
     expect(getPersonalizationConfig({ PUBLIC_ENABLE_AI: "true" }).aiEndpoint).toBe("");
     expect(getPersonalizationConfig({ PUBLIC_AI_ENDPOINT: "/api/ai/explain" }).aiEndpoint).toBe("/api/ai/explain");
+  });
+
+  it("marks the example domain as unsafe for production", () => {
+    const config = getProductionConfig({ PUBLIC_SITE_URL: "https://example.com" });
+
+    expect(config.safeDomain).toBe(false);
+  });
+
+  it("normalizes production binding names", () => {
+    const config = getProductionConfig({});
+
+    expect(config.bindings.d1Database).toBe("POETRY_DB");
+    expect(config.bindings.astroSessionKv).toBe("SESSION");
+    expect(config.bindings.sessionKv).toBe("POETRY_SESSION");
+    expect(config.bindings.tokensKv).toBe("POETRY_TOKENS");
+    expect(config.bindings.rateLimitKv).toBe("POETRY_RATE_LIMIT");
+    expect(config.bindings.indexNowKv).toBe("POETRY_INDEXNOW");
+  });
+
+  it("keeps search submission disabled without tokens", () => {
+    const config = getSearchSubmissionConfig({});
+
+    expect(config.indexNow.enabled).toBe(false);
+    expect(config.baidu.enabled).toBe(false);
+  });
+
+  it("does not emit fake ads.txt records without a publisher id", () => {
+    expect(getAdsConfig({}).adsTxtRecords).toEqual([]);
+  });
+
+  it("keeps disabled ad slots hidden from readers", () => {
+    expect(getAdSlotRenderState(getAdsConfig({}), "feedInline")).toEqual({
+      enabled: false,
+      slotName: "feed-inline",
+      hidden: true
+    });
   });
 });

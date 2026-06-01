@@ -3,7 +3,7 @@ import Analytics from "@/components/Analytics.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
 import SiteHeader from "@/components/SiteHeader.astro";
 import { getSiteConfig } from "@/config/site";
-import { buildCanonicalUrl, serializeJsonLd } from "@/lib/seo/meta";
+import { buildCanonicalUrl, jsonLdPayloads, serializeJsonLd } from "@/lib/seo/meta";
 import "@/styles/global.css";
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
   robots?: string;
   lang?: "zh-CN" | "en";
   alternates?: Array<{ lang: string; href: string }>;
-  jsonLd?: unknown;
+  jsonLd?: unknown | unknown[];
 }
 
 const site = getSiteConfig();
@@ -27,7 +27,7 @@ const {
   jsonLd
 } = Astro.props;
 const canonical = buildCanonicalUrl(site.url, canonicalPath);
-const jsonLdText = jsonLd ? serializeJsonLd(jsonLd) : "";
+const jsonLdBlocks = jsonLdPayloads(jsonLd);
 ---
 
 <!doctype html>
@@ -43,7 +43,7 @@ const jsonLdText = jsonLd ? serializeJsonLd(jsonLd) : "";
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    {jsonLdText && <script type="application/ld+json" is:inline set:html={jsonLdText} />}
+    {jsonLdBlocks.map((block) => <script type="application/ld+json" is:inline set:html={serializeJsonLd(block)} />)}
     <Analytics />
   </head>
   <body>

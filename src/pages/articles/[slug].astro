@@ -1,0 +1,83 @@
+---
+import { getCollection, render } from "astro:content";
+import { getSiteConfig } from "@/config/site";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { articleJsonLd, breadcrumbJsonLd } from "@/lib/seo/structured-data";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const articles = await getCollection("articles");
+
+  return articles
+    .filter((article) => article.data.reviewState === "reviewed" || article.data.reviewState === "published")
+    .map((article) => ({ params: { slug: article.slug }, props: { article } }));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+const site = getSiteConfig();
+const articlePath = `/articles/${article.slug}`;
+---
+
+<BaseLayout
+  title={`${article.data.title} - 未名诗阁`}
+  description={article.data.description}
+  canonicalPath={articlePath}
+  jsonLd={[
+    articleJsonLd({
+      siteUrl: site.url,
+      path: articlePath,
+      title: article.data.title,
+      description: article.data.description,
+      author: article.data.author,
+      dateModified: article.data.updated
+    }),
+    breadcrumbJsonLd(site.url, [
+      { name: "Articles", path: "/articles" },
+      { name: article.data.title, path: articlePath }
+    ])
+  ]}
+>
+  <article class="article">
+    <p class="kicker">Article · {article.data.updated}</p>
+    <h1>{article.data.title}</h1>
+    {article.data.titleEn && <p class="subtitle">{article.data.titleEn}</p>}
+    <p class="description">{article.data.description}</p>
+    <Content />
+    {article.data.relatedPoems.length > 0 && (
+      <section class="related">
+        <h2 class="section-title">相关诗词</h2>
+        {article.data.relatedPoems.map((slug) => <a href={`/poems/${slug}`}>{slug}</a>)}
+      </section>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .article {
+    max-width: 820px;
+    padding: 54px 0;
+  }
+
+  .kicker {
+    color: var(--cinnabar);
+    font-weight: 700;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--teal);
+    font-size: 48px;
+    line-height: 1.12;
+  }
+
+  .subtitle,
+  .description {
+    color: var(--muted);
+  }
+
+  .related {
+    margin-top: 38px;
+  }
+</style>

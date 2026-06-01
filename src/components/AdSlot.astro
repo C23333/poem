@@ -1,18 +1,18 @@
 ---
-import { getAdsConfig } from "@/config/site";
+import { getAdSlotRenderState, getAdsConfig } from "@/config/site";
 
 interface Props {
   slot: keyof ReturnType<typeof getAdsConfig>["slots"];
 }
 
 const ads = getAdsConfig();
-const slot = ads.slots[Astro.props.slot];
+const slotState = getAdSlotRenderState(ads, Astro.props.slot);
 ---
 
 {ads.enabled ? (
-  <ins class="adsbygoogle" data-ad-client={ads.adsenseClient} data-ad-slot={slot.name}></ins>
+  <ins class="adsbygoogle" data-ad-client={ads.adsenseClient} data-ad-slot={slotState.slotName}></ins>
 ) : (
-  <div class="ad-slot" data-ad-slot={slot.name} hidden aria-hidden="true"></div>
+  <div class="ad-slot" data-ad-slot={slotState.slotName} hidden={slotState.hidden} aria-hidden="true"></div>
 )}
 
 <style>

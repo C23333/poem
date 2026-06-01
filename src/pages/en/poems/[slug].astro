@@ -3,24 +3,26 @@ import { getCollection } from "astro:content";
 import PoemReader from "@/components/PoemReader.astro";
 import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { hasEnglishAssets, isIndexablePoem } from "@/lib/content/poems";
+import { displayPoetName, hasEnglishAssets, isIndexablePoem } from "@/lib/content/poems";
 import { buildHreflangLinks, pageRobots } from "@/lib/seo/meta";
-import { poemJsonLd } from "@/lib/seo/structured-data";
+import { breadcrumbJsonLd, poemJsonLd } from "@/lib/seo/structured-data";
 
 export const prerender = true;
 
 export async function getStaticPaths() {
   const poems = await getCollection("poems");
+  const poets = await getCollection("poets");
   return poems
     .filter((poem) => hasEnglishAssets(poem))
-    .map((poem) => ({ params: { slug: poem.slug }, props: { poem } }));
+    .map((poem) => ({ params: { slug: poem.slug }, props: { poem, poets } }));
 }
 
-const { poem } = Astro.props;
+const { poem, poets } = Astro.props;
 const data = poem.data;
 const site = getSiteConfig();
 const poemPath = `/poems/${poem.slug}`;
 const englishPoemPath = `/en/poems/${poem.slug}`;
+const poetName = displayPoetName(poem, poets);
 ---
 
 <BaseLayout
@@ -30,18 +32,24 @@ const englishPoemPath = `/en/poems/${poem.slug}`;
   robots={pageRobots(isIndexablePoem(poem) && hasEnglishAssets(poem))}
   lang="en"
   alternates={buildHreflangLinks(site.url, { zh: poemPath, en: englishPoemPath })}
-  jsonLd={poemJsonLd({
-    siteUrl: site.url,
-    path: englishPoemPath,
-    title: data.titleEn || data.title,
-    author: data.poet,
-    language: "en"
-  })}
+  jsonLd={[
+    poemJsonLd({
+      siteUrl: site.url,
+      path: englishPoemPath,
+      title: data.titleEn || data.title,
+      author: poetName.en,
+      language: "en"
+    }),
+    breadcrumbJsonLd(site.url, [
+      { name: "Poems", path: "/poems" },
+      { name: data.titleEn || data.title, path: englishPoemPath }
+    ])
+  ]}
 >
   <PoemReader
     title={data.title}
     titleEn={data.titleEn}
-    poet={data.poet}
+    poet={poetName.en}
     dynasty={data.dynasty}
     themes={data.themes}
     lines={data.lines}

@@ -1,0 +1,87 @@
+---
+import { getCollection } from "astro:content";
+import { getSiteConfig } from "@/config/site";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { isIndexablePoem } from "@/lib/content/poems";
+import { breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/seo/structured-data";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const dynasties = await getCollection("dynasties");
+  const poems = await getCollection("poems");
+  const poets = await getCollection("poets");
+
+  return dynasties.map((dynasty) => ({
+    params: { slug: dynasty.slug },
+    props: {
+      dynasty,
+      poems: poems.filter((poem) => isIndexablePoem(poem) && poem.data.dynasty === dynasty.data.name),
+      poets: poets.filter((poet) => poet.data.dynasty === dynasty.data.name)
+    }
+  }));
+}
+
+const { dynasty, poems, poets } = Astro.props;
+const site = getSiteConfig();
+const dynastyPath = `/dynasties/${dynasty.slug}`;
+---
+
+<BaseLayout
+  title={`${dynasty.data.name} - 朝代诗词`}
+  description={dynasty.data.summaryZh}
+  canonicalPath={dynastyPath}
+  jsonLd={[
+    collectionPageJsonLd({
+      siteUrl: site.url,
+      path: dynastyPath,
+      name: dynasty.data.name,
+      description: dynasty.data.summaryZh
+    }),
+    breadcrumbJsonLd(site.url, [
+      { name: "Dynasties", path: "/dynasties" },
+      { name: dynasty.data.name, path: dynastyPath }
+    ])
+  ]}
+>
+  <section class="section">
+    <h1>{dynasty.data.name} · {dynasty.data.nameEn}</h1>
+    <p>{dynasty.data.summaryZh}</p>
+    {dynasty.data.summaryEn && <p>{dynasty.data.summaryEn}</p>}
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">诗人</h2>
+    <div class="link-grid">
+      {poets.map((poet) => <a href={`/poets/${poet.slug}`}>{poet.data.name} · {poet.data.nameEn}</a>)}
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">已审校诗词</h2>
+    <div class="link-grid">
+      {poems.map((poem) => <a href={`/poems/${poem.slug}`}>{poem.data.title} · {poem.data.titleEn}</a>)}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  h1 {
+    color: var(--teal);
+    font-size: 44px;
+    line-height: 1.12;
+  }
+
+  .link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+
+  .link-grid a {
+    border: 1px solid var(--line);
+    background: rgba(255, 249, 234, 0.68);
+    padding: 14px;
+    text-decoration: none;
+  }
+</style>

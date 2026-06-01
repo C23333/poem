@@ -5,6 +5,41 @@ export const prerender = true;
 ---
 
 <BaseLayout title="Terms - 未名诗阁" description="Terms of use." canonicalPath="/terms">
-  <h1>Terms</h1>
-  <p>Poem originals may be public-domain classical text. Editorial commentary, translations, and site design are project content unless otherwise noted.</p>
+  <article class="policy">
+    <h1>Terms</h1>
+    <p>
+      未名诗阁提供中国古典诗词的原文、注释、今译、英译、背景和赏析内容。诗词原文多为公版古典文本；
+      本站编写的译文、赏析、页面结构和设计属于站点原创或整理内容，除非页面另有说明。
+    </p>
+
+    <h2>Content Review</h2>
+    <p>
+      进入索引和 sitemap 的页面必须包含来源、许可、审校状态和增量内容。草稿、AI 草稿、待审内容和薄内容不会作为可索引页面发布。
+    </p>
+
+    <h2>External Services</h2>
+    <p>
+      统计、广告、邮件、登录和 AI 功能都通过配置启用。外部服务的审核、收录、广告展示和收益结果不由本站直接保证。
+    </p>
+
+    <h2>Contact</h2>
+    <p>内容、版权或使用条款相关问题可以联系 liuyongkai@hotmail.com。</p>
+  </article>
 </BaseLayout>
+
+<style>
+  .policy {
+    max-width: 820px;
+    padding: 54px 0;
+  }
+
+  h1 {
+    color: var(--teal);
+    font-size: 44px;
+  }
+
+  h2 {
+    margin-top: 30px;
+    color: var(--cinnabar);
+  }
+</style>

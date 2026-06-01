@@ -9,7 +9,10 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "validate:production": "node scripts/validate-production.mjs",
+    "verify:content": "node scripts/verify-content.mjs",
+    "verify:discovery": "node scripts/verify-discovery.mjs"
   },
   "dependencies": {
     "@astrojs/check": "0.9.9",

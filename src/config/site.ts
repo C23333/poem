@@ -87,10 +87,22 @@ export const AD_SLOTS = {
 } as const;
 
 export function getAdsConfig(env: EnvLike = import.meta.env) {
+  const publisherId = env.PUBLIC_ADSENSE_PUBLISHER_ID || "";
+
   return {
     enabled: boolValue(env.PUBLIC_ENABLE_ADS) && Boolean(env.PUBLIC_ADSENSE_CLIENT),
     adsenseClient: env.PUBLIC_ADSENSE_CLIENT || "",
+    adsensePublisherId: publisherId,
+    adsTxtRecords: publisherId ? [`google.com, ${publisherId}, DIRECT, f08c47fec0942fa0`] : [],
     slots: AD_SLOTS
+  };
+}
+
+export function getAdSlotRenderState(config: ReturnType<typeof getAdsConfig>, slotKey: keyof typeof AD_SLOTS) {
+  return {
+    enabled: config.enabled,
+    slotName: config.slots[slotKey].name,
+    hidden: !config.enabled
   };
 }
 
@@ -120,6 +132,38 @@ export function getPersonalizationConfig(env: EnvLike = import.meta.env) {
     preferenceStorageKey: "poetry-reader-interests",
     loginEnabled: false,
     personalCenterEnabled: false
+  };
+}
+
+export function getProductionConfig(env: EnvLike = import.meta.env) {
+  const site = getSiteConfig(env);
+
+  return {
+    safeDomain: site.url !== "https://example.com",
+    nodeMinimum: ">=22.12.0",
+    bindings: {
+      d1Database: env.CLOUDFLARE_D1_BINDING || "POETRY_DB",
+      astroSessionKv: env.CLOUDFLARE_ASTRO_SESSION_KV_BINDING || "SESSION",
+      sessionKv: env.CLOUDFLARE_SESSION_KV_BINDING || "POETRY_SESSION",
+      tokensKv: env.CLOUDFLARE_TOKENS_KV_BINDING || "POETRY_TOKENS",
+      rateLimitKv: env.CLOUDFLARE_RATE_LIMIT_KV_BINDING || "POETRY_RATE_LIMIT",
+      indexNowKv: env.CLOUDFLARE_INDEXNOW_KV_BINDING || "POETRY_INDEXNOW"
+    }
+  };
+}
+
+export function getSearchSubmissionConfig(env: EnvLike = import.meta.env) {
+  return {
+    indexNow: {
+      enabled: Boolean(env.INDEXNOW_KEY),
+      key: env.INDEXNOW_KEY || "",
+      endpoint: env.INDEXNOW_ENDPOINT || "https://api.indexnow.org/indexnow"
+    },
+    baidu: {
+      enabled: Boolean(env.BAIDU_SUBMIT_TOKEN),
+      token: env.BAIDU_SUBMIT_TOKEN || "",
+      endpoint: env.BAIDU_SUBMIT_ENDPOINT || "https://data.zz.baidu.com/urls"
+    }
   };
 }
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hasEnglishAssets, hasLineHelpers, isIndexablePoem, poemPath } from "./poems";
+import { displayPoetName, hasEnglishAssets, hasLineHelpers, isIndexablePoem, poemPath } from "./poems";
 
 const reviewedPoem = {
   slug: "jing-ye-si",
@@ -41,6 +41,33 @@ describe("poem content helpers", () => {
     expect(isIndexablePoem(reviewedPoem)).toBe(true);
   });
 
+  it("allows published value-added poems", () => {
+    expect(
+      isIndexablePoem({
+        ...reviewedPoem,
+        data: { ...reviewedPoem.data, reviewState: "published", reviewed: true }
+      })
+    ).toBe(true);
+  });
+
+  it("excludes AI drafts even when value-added text exists", () => {
+    expect(
+      isIndexablePoem({
+        ...reviewedPoem,
+        data: { ...reviewedPoem.data, reviewState: "ai-draft", reviewed: true }
+      })
+    ).toBe(false);
+  });
+
+  it("excludes needs-review pages even when reviewed flag is true", () => {
+    expect(
+      isIndexablePoem({
+        ...reviewedPoem,
+        data: { ...reviewedPoem.data, reviewState: "needs-review", reviewed: true }
+      })
+    ).toBe(false);
+  });
+
   it("marks thin poem as not indexable", () => {
     expect(isIndexablePoem(thinPoem)).toBe(false);
   });
@@ -58,5 +85,14 @@ describe("poem content helpers", () => {
   it("builds locale-aware poem paths", () => {
     expect(poemPath("jing-ye-si", "zh-CN")).toBe("/poems/jing-ye-si");
     expect(poemPath("jing-ye-si", "en")).toBe("/en/poems/jing-ye-si");
+  });
+
+  it("uses poet collection data for display names", () => {
+    expect(
+      displayPoetName(
+        { data: { poet: "li-bai" } },
+        [{ slug: "li-bai", data: { name: "李白", nameEn: "Li Bai" } }]
+      )
+    ).toEqual({ zh: "李白", en: "Li Bai" });
   });
 });

@@ -1,6 +1,8 @@
 ---
 import { getCollection } from "astro:content";
+import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/seo/structured-data";
 
 export const prerender = true;
 
@@ -10,9 +12,27 @@ export async function getStaticPaths() {
 }
 
 const { theme } = Astro.props;
+const site = getSiteConfig();
+const themePath = `/themes/${theme.slug}`;
 ---
 
-<BaseLayout title={`${theme.data.name} - 诗词主题`} description={theme.data.summaryZh} canonicalPath={`/themes/${theme.slug}`}>
+<BaseLayout
+  title={`${theme.data.name} - 诗词主题`}
+  description={theme.data.summaryZh}
+  canonicalPath={themePath}
+  jsonLd={[
+    collectionPageJsonLd({
+      siteUrl: site.url,
+      path: themePath,
+      name: theme.data.name,
+      description: theme.data.summaryZh
+    }),
+    breadcrumbJsonLd(site.url, [
+      { name: "Themes", path: "/themes" },
+      { name: theme.data.name, path: themePath }
+    ])
+  ]}
+>
   <h1>{theme.data.name}</h1>
   <p>{theme.data.summaryZh}</p>
   {theme.data.summaryEn && <p>{theme.data.summaryEn}</p>}

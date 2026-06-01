@@ -1,0 +1,29 @@
+name = "poetry-traffic-site"
+compatibility_date = "2026-05-31"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "POETRY_DB"
+database_name = "poetry-traffic-site"
+database_id = "00000000-0000-0000-0000-000000000000"
+
+[[kv_namespaces]]
+binding = "SESSION"
+id = "00000000000000000000000000000000"
+
+[[kv_namespaces]]
+binding = "POETRY_SESSION"
+id = "00000000000000000000000000000000"
+
+[[kv_namespaces]]
+binding = "POETRY_TOKENS"
+id = "00000000000000000000000000000000"
+
+[[kv_namespaces]]
+binding = "POETRY_RATE_LIMIT"
+id = "00000000000000000000000000000000"
+
+[[kv_namespaces]]
+binding = "POETRY_INDEXNOW"
+id = "00000000000000000000000000000000"

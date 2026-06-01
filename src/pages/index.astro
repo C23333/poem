@@ -1,15 +1,24 @@
 ---
 import AdSlot from "@/components/AdSlot.astro";
 import SubscriptionPanel from "@/components/SubscriptionPanel.astro";
+import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { websiteJsonLd } from "@/lib/seo/structured-data";
 
 export const prerender = true;
+
+const site = getSiteConfig();
 ---
 
 <BaseLayout
   title="未名诗阁 - Chinese Poetry, Read in Two Languages"
   description="A bilingual Chinese classical poetry site with notes, translations, context, and daily recommendations."
   canonicalPath="/"
+  jsonLd={websiteJsonLd({
+    siteUrl: site.url,
+    name: "未名诗阁",
+    description: "A bilingual Chinese classical poetry site with notes, translations, context, and daily recommendations."
+  })}
 >
   <section class="hero">
     <div class="intro">

@@ -1,0 +1,66 @@
+---
+import { getCollection } from "astro:content";
+import { getSiteConfig } from "@/config/site";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { collectionPageJsonLd } from "@/lib/seo/structured-data";
+
+export const prerender = true;
+
+const themes = await getCollection("themes");
+const site = getSiteConfig();
+---
+
+<BaseLayout
+  title="主题索引 - 未名诗阁"
+  description="按主题浏览古诗词。"
+  canonicalPath="/themes"
+  jsonLd={collectionPageJsonLd({
+    siteUrl: site.url,
+    path: "/themes",
+    name: "主题索引",
+    description: "按主题浏览古诗词。"
+  })}
+>
+  <section class="section">
+    <h1>主题索引</h1>
+    <p>主题页把诗词从单篇阅读连接到可持续浏览路径。</p>
+  </section>
+
+  <section class="index-grid">
+    {themes.map((theme) => (
+      <a href={`/themes/${theme.slug}`}>
+        <strong>{theme.data.name}</strong>
+        <span>{theme.data.nameEn}</span>
+        <small>{theme.data.summaryZh}</small>
+      </a>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  h1 {
+    color: var(--teal);
+    font-size: 48px;
+  }
+
+  .index-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 28px 0 64px;
+  }
+
+  .index-grid a {
+    display: grid;
+    gap: 6px;
+    border: 1px solid var(--line);
+    background: rgba(255, 249, 234, 0.68);
+    padding: 16px;
+    text-decoration: none;
+  }
+
+  .index-grid span,
+  .index-grid small {
+    color: var(--muted);
+  }
+</style>

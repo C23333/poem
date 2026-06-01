@@ -17,6 +17,11 @@ export function serializeJsonLd(data: unknown): string {
   return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
+export function jsonLdPayloads(data: unknown | unknown[] | undefined): unknown[] {
+  if (!data) return [];
+  return Array.isArray(data) ? data : [data];
+}
+
 export function pageRobots(indexable: boolean): string {
   return indexable ? "index,follow" : "noindex,follow";
 }

@@ -1,0 +1,94 @@
+---
+import { getCollection } from "astro:content";
+import { getSiteConfig } from "@/config/site";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { isIndexablePoem } from "@/lib/content/poems";
+import { breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/seo/structured-data";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const collections = await getCollection("collections");
+  const poems = await getCollection("poems");
+
+  return collections
+    .filter((collection) => collection.data.reviewState === "reviewed" || collection.data.reviewState === "published")
+    .map((collection) => ({
+      params: { slug: collection.slug },
+      props: {
+        collection,
+        poems: poems.filter(
+          (poem) => isIndexablePoem(poem) && collection.data.poemSlugs.includes(poem.slug)
+        )
+      }
+    }));
+}
+
+const { collection, poems } = Astro.props;
+const site = getSiteConfig();
+const collectionPath = `/collections/${collection.slug}`;
+---
+
+<BaseLayout
+  title={`${collection.data.name} - 诗词合集`}
+  description={collection.data.summaryZh}
+  canonicalPath={collectionPath}
+  jsonLd={[
+    collectionPageJsonLd({
+      siteUrl: site.url,
+      path: collectionPath,
+      name: collection.data.name,
+      description: collection.data.summaryZh
+    }),
+    breadcrumbJsonLd(site.url, [
+      { name: "Collections", path: "/collections" },
+      { name: collection.data.name, path: collectionPath }
+    ])
+  ]}
+>
+  <section class="section">
+    <h1>{collection.data.name} · {collection.data.nameEn}</h1>
+    <p>{collection.data.summaryZh}</p>
+    {collection.data.summaryEn && <p>{collection.data.summaryEn}</p>}
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">合集诗词</h2>
+    <div class="poem-list">
+      {poems.map((poem) => (
+        <a href={`/poems/${poem.slug}`}>
+          <strong>{poem.data.title}</strong>
+          <span>{poem.data.titleEn}</span>
+          <small>{poem.data.explanationZh}</small>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  h1 {
+    color: var(--teal);
+    font-size: 44px;
+    line-height: 1.12;
+  }
+
+  .poem-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .poem-list a {
+    display: grid;
+    gap: 6px;
+    border: 1px solid var(--line);
+    background: rgba(255, 249, 234, 0.68);
+    padding: 16px;
+    text-decoration: none;
+  }
+
+  .poem-list span,
+  .poem-list small {
+    color: var(--muted);
+  }
+</style>

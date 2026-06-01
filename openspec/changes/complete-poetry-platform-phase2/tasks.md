@@ -2,27 +2,27 @@
 
 - [ ] 1.1 Add Node 22 compatibility branch/task and update `package.json` engines only after local Node/runtime decision is approved.
 - [ ] 1.2 Add controlled Astro/Cloudflare dependency upgrade task and rerun `npm audit`.
-- [ ] 1.3 Add Cloudflare config file with explicit D1/KV binding names for Phase 2 features.
-- [ ] 1.4 Add production environment validation script for canonical domain, feature flags, provider env, and binding names.
-- [ ] 1.5 Add launch runbook covering preview deploy, production deploy, rollback, domain, analytics, ads, and binding checks.
+- [x] 1.3 Add Cloudflare config file with explicit D1/KV binding names for Phase 2 features.
+- [x] 1.4 Add production environment validation script for canonical domain, feature flags, provider env, and binding names.
+- [x] 1.5 Add launch runbook covering preview deploy, production deploy, rollback, domain, analytics, ads, and binding checks.
 
 ## 2. Content Operations
 
-- [ ] 2.1 Extend content schemas with review state, dynasty, collection, article, editor notes, and structured metadata fields.
-- [ ] 2.2 Add content helper tests for draft/AI-draft/noindex/published behavior.
-- [ ] 2.3 Implement dynasty, collection, article, poems index, poets index, and themes index pages.
+- [x] 2.1 Extend content schemas with review state, dynasty, collection, article, editor notes, and structured metadata fields.
+- [x] 2.2 Add content helper tests for draft/AI-draft/noindex/published behavior.
+- [x] 2.3 Implement dynasty, collection, article, poems index, poets index, and themes index pages.
 - [ ] 2.4 Add import script that creates draft content only and never publishes imported poems automatically.
-- [ ] 2.5 Add content verification script for value-added fields, source/license metadata, duplicate slug/canonical path, and related-link validity.
+- [x] 2.5 Add content verification script for value-added fields, source/license metadata, duplicate slug/canonical path, and related-link validity.
 - [ ] 2.6 Add enough reviewed seed content to make the site more credible before AdSense application.
 
 ## 3. Discovery Automation
 
-- [ ] 3.1 Add JSON-LD builders and tests for WebSite, BreadcrumbList, Person, CollectionPage, Article, and CreativeWork.
-- [ ] 3.2 Wire JSON-LD into homepage, poem pages, poet pages, dynasty pages, collection pages, theme pages, and articles.
-- [ ] 3.3 Add build-output discovery verification script for sitemap, robots, RSS, canonical URLs, reciprocal hreflang, and JSON-LD parsing.
+- [x] 3.1 Add JSON-LD builders and tests for WebSite, BreadcrumbList, Person, CollectionPage, Article, and CreativeWork.
+- [x] 3.2 Wire JSON-LD into homepage, poem pages, poet pages, dynasty pages, collection pages, theme pages, and articles.
+- [x] 3.3 Add build-output discovery verification script for sitemap, robots, RSS, canonical URLs, reciprocal hreflang, and JSON-LD parsing.
 - [ ] 3.4 Add IndexNow key route and URL submission command that only submits reviewed sitemap URLs.
 - [ ] 3.5 Add Baidu submission command with explicit missing-token failure.
-- [ ] 3.6 Update README with Google Search Console, Bing Webmaster Tools, Baidu Search Resource Platform, IndexNow, and AI crawler setup.
+- [x] 3.6 Update README with Google Search Console, Bing Webmaster Tools, Baidu Search Resource Platform, IndexNow, and AI crawler setup.
 
 ## 4. User Engagement
 
@@ -46,11 +46,11 @@
 
 ## 6. Monetization Compliance
 
-- [ ] 6.1 Add `ads.txt` route driven by verified AdSense/Baidu publisher config.
-- [ ] 6.2 Add tests ensuring disabled ads produce no reader-visible development placeholders.
+- [x] 6.1 Add `ads.txt` route driven by verified AdSense/Baidu publisher config.
+- [x] 6.2 Add tests ensuring disabled ads produce no reader-visible development placeholders.
 - [ ] 6.3 Add policy-safe ad slot layout checks for poem pages, index pages, and article pages.
-- [ ] 6.4 Update privacy/terms/contact pages for analytics, ads, email subscription, comments, and account data.
-- [ ] 6.5 Add monetization launch checklist and status table for AdSense, Baidu Union, domain, content volume, and external approvals.
+- [x] 6.4 Update privacy/terms/contact pages for analytics, ads, email subscription, comments, and account data.
+- [x] 6.5 Add monetization launch checklist and status table for AdSense, Baidu Union, domain, content volume, and external approvals.
 
 ## 7. Verification And Release
 

@@ -1,0 +1,67 @@
+---
+import { getCollection } from "astro:content";
+import { getSiteConfig } from "@/config/site";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { isIndexablePoem } from "@/lib/content/poems";
+import { collectionPageJsonLd } from "@/lib/seo/structured-data";
+
+export const prerender = true;
+
+const poems = (await getCollection("poems")).filter(isIndexablePoem);
+const site = getSiteConfig();
+---
+
+<BaseLayout
+  title="诗词索引 - 未名诗阁"
+  description="按主题和诗人浏览已审校古诗词。"
+  canonicalPath="/poems"
+  jsonLd={collectionPageJsonLd({
+    siteUrl: site.url,
+    path: "/poems",
+    name: "诗词索引",
+    description: "按主题和诗人浏览已审校古诗词。"
+  })}
+>
+  <section class="section">
+    <h1>诗词索引</h1>
+    <p>这里只列出已审校、带有注释和赏析的页面。草稿和薄内容不会进入索引。</p>
+  </section>
+
+  <section class="poem-grid">
+    {poems.map((poem) => (
+      <a href={`/poems/${poem.slug}`}>
+        <strong>{poem.data.title}</strong>
+        <span>{poem.data.titleEn}</span>
+        <small>{poem.data.themes.join(" / ")}</small>
+      </a>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  h1 {
+    color: var(--teal);
+    font-size: 48px;
+  }
+
+  .poem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 28px 0 64px;
+  }
+
+  .poem-grid a {
+    display: grid;
+    gap: 6px;
+    border: 1px solid var(--line);
+    background: rgba(255, 249, 234, 0.68);
+    padding: 16px;
+    text-decoration: none;
+  }
+
+  .poem-grid span,
+  .poem-grid small {
+    color: var(--muted);
+  }
+</style>

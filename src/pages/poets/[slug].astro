@@ -1,6 +1,8 @@
 ---
 import { getCollection } from "astro:content";
+import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { breadcrumbJsonLd, personJsonLd } from "@/lib/seo/structured-data";
 
 export const prerender = true;
 
@@ -10,9 +12,27 @@ export async function getStaticPaths() {
 }
 
 const { poet } = Astro.props;
+const site = getSiteConfig();
+const poetPath = `/poets/${poet.slug}`;
 ---
 
-<BaseLayout title={`${poet.data.name} - 诗人`} description={poet.data.summaryZh} canonicalPath={`/poets/${poet.slug}`}>
+<BaseLayout
+  title={`${poet.data.name} - 诗人`}
+  description={poet.data.summaryZh}
+  canonicalPath={poetPath}
+  jsonLd={[
+    personJsonLd({
+      siteUrl: site.url,
+      path: poetPath,
+      name: poet.data.name,
+      alternateName: poet.data.nameEn
+    }),
+    breadcrumbJsonLd(site.url, [
+      { name: "Poets", path: "/poets" },
+      { name: poet.data.name, path: poetPath }
+    ])
+  ]}
+>
   <h1>{poet.data.name}</h1>
   <p>{poet.data.summaryZh}</p>
   {poet.data.summaryEn && <p>{poet.data.summaryEn}</p>}

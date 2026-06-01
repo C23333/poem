@@ -5,6 +5,27 @@ export const prerender = true;
 ---
 
 <BaseLayout title="Contact - 未名诗阁" description="Contact page." canonicalPath="/contact">
-  <h1>Contact</h1>
-  <p>Contact information will be configured before public launch.</p>
+  <article class="contact">
+    <h1>Contact</h1>
+    <p>站点负责人：liuyongkai</p>
+    <p>邮箱：<a href="mailto:liuyongkai@hotmail.com">liuyongkai@hotmail.com</a></p>
+    <p>可以通过邮箱联系内容纠错、版权说明、广告合作、隐私请求和技术问题。</p>
+  </article>
 </BaseLayout>
+
+<style>
+  .contact {
+    max-width: 760px;
+    padding: 54px 0;
+  }
+
+  h1 {
+    color: var(--teal);
+    font-size: 44px;
+  }
+
+  a {
+    color: var(--cinnabar);
+    font-weight: 700;
+  }
+</style>

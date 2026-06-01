@@ -5,6 +5,48 @@ export const prerender = true;
 ---
 
 <BaseLayout title="Privacy - 未名诗阁" description="Privacy and analytics policy." canonicalPath="/privacy">
-  <h1>Privacy</h1>
-  <p>Analytics and advertising scripts are disabled unless configured. Email subscription will require explicit user submission.</p>
+  <article class="policy">
+    <h1>Privacy</h1>
+    <p>
+      未名诗阁默认以静态内容阅读为主。没有配置第三方统计、广告或订阅服务时，站点不会主动收集可识别个人身份的信息。
+    </p>
+
+    <h2>Analytics</h2>
+    <p>
+      站点预留 Google Analytics、Cloudflare Web Analytics 和 Baidu Tongji 配置。只有设置对应环境变量后，相关脚本才会加载。
+      这些工具可能记录访问页面、设备类型、来源页面和大致地区，用于了解内容表现和修复体验问题。
+    </p>
+
+    <h2>Advertising</h2>
+    <p>
+      广告默认关闭。启用 Google AdSense 或百度联盟前，会更新广告配置、ads.txt、页面说明和必要的同意提示。
+      广告平台可能使用 cookie 或类似技术来衡量广告效果。
+    </p>
+
+    <h2>Email, Accounts, Comments</h2>
+    <p>
+      每日诗词邮件、登录、个人中心、收藏和评论仍是后续功能。上线这些功能时，站点会只保存完成服务所需的数据，
+      例如邮箱、订阅偏好、收藏记录、评论内容和审核状态。评论会先进入审核，不会默认公开。
+    </p>
+
+    <h2>Contact</h2>
+    <p>隐私相关问题可以联系 liuyongkai@hotmail.com。</p>
+  </article>
 </BaseLayout>
+
+<style>
+  .policy {
+    max-width: 820px;
+    padding: 54px 0;
+  }
+
+  h1 {
+    color: var(--teal);
+    font-size: 44px;
+  }
+
+  h2 {
+    margin-top: 30px;
+    color: var(--cinnabar);
+  }
+</style>
