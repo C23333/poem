@@ -11,7 +11,7 @@
 - [x] 2.1 Extend content schemas with review state, dynasty, collection, article, editor notes, and structured metadata fields.
 - [x] 2.2 Add content helper tests for draft/AI-draft/noindex/published behavior.
 - [x] 2.3 Implement dynasty, collection, article, poems index, poets index, and themes index pages.
-- [ ] 2.4 Add import script that creates draft content only and never publishes imported poems automatically.
+- [x] 2.4 Add import script that creates draft content only and never publishes imported poems automatically.
 - [x] 2.5 Add content verification script for value-added fields, source/license metadata, duplicate slug/canonical path, and related-link validity.
 - [ ] 2.6 Add enough reviewed seed content to make the site more credible before AdSense application.
 

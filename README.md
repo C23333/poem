@@ -60,6 +60,14 @@ Do not publish poem-text-only pages into the public sitemap. An indexable poem p
 
 Unreviewed or thin pages must render `noindex` or stay out of sitemap output.
 
+Bulk import is draft-only:
+
+```powershell
+npm run import:poems -- .\data\poems.json
+```
+
+The JSON input must be an array with `slug`, `title`, `poet`, `dynasty`, `themes`, and `original`. Imported files are forced to `reviewState: draft` and `reviewed: false`; the script refuses to overwrite existing poems unless `--overwrite` is passed. Imported poems need human commentary, translation/helper lines, source/license review, and verification before publication.
+
 ## Reading Modes
 
 Reading behavior is controlled by `src/config/site.ts`.
@@ -260,6 +268,7 @@ Implemented in this branch:
 - production config helper and validation script
 - explicit content review states
 - dynasty, collection, article, poem index, poet index, and theme index pages
+- draft-only poem import script for public-domain seed data
 - expanded JSON-LD for site, breadcrumbs, people, collections, articles, and poems
 - content and discovery verification scripts
 - repeatable user-engagement smoke script for `/me`, poem actions, and disabled API boundaries
