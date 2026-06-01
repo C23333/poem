@@ -38,6 +38,15 @@ export async function smokeUserEngagement() {
   await assertJson("/api/preferences", 503, { ok: false, error: "personal center is disabled" });
   await assertJson("/api/saved-poems", 503, { ok: false, error: "saved poems is disabled" });
   await assertJson("/api/comments?poemSlug=jing-ye-si", 503, { ok: false, error: "comments is disabled" });
+  await assertJson(
+    "/api/subscriptions",
+    503,
+    { ok: false, error: "subscriptions is disabled" },
+    {
+      method: "POST",
+      body: JSON.stringify({ email: "reader@example.com" })
+    }
+  );
 
   console.log("User engagement smoke passed.");
 }

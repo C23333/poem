@@ -112,11 +112,20 @@ describe("user engagement repositories", () => {
     const statement = createSubscriptionStatement({
       id: "sub_1",
       email: "reader@example.com",
-      interestTags: ["moon"]
+      interestTags: ["moon"],
+      status: "pending",
+      unsubscribeTokenHash: "hash_1"
     });
 
     expect(statement.sql).toContain("INSERT INTO subscriptions");
-    expect(statement.params).toEqual(["sub_1", null, "reader@example.com", JSON.stringify(["moon"])]);
+    expect(statement.params).toEqual([
+      "sub_1",
+      null,
+      "reader@example.com",
+      JSON.stringify(["moon"]),
+      "pending",
+      "hash_1"
+    ]);
   });
 
   it("stores submitted comments as pending", () => {

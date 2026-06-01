@@ -35,7 +35,7 @@ Copy `.env.example` to `.env` and set values as needed.
 - `PUBLIC_ADSENSE_PUBLISHER_ID`: AdSense publisher ID used for `ads.txt`; leave empty until the account is approved.
 - `PUBLIC_ENABLE_ADS`: enables ad rendering only when true and AdSense client exists.
 - `PUBLIC_ENABLE_SUBSCRIPTION`: enables the daily poem subscription form only when true.
-- `PUBLIC_SUBSCRIPTION_ENDPOINT`: future subscription API endpoint. Empty means the form is disabled.
+- `PUBLIC_SUBSCRIPTION_ENDPOINT`: subscription API endpoint. Use `/api/subscriptions` for the built-in D1/KV-backed subscription request boundary.
 - `PUBLIC_ENABLE_AI`: enables AI editorial APIs only when true and server-side provider variables are complete.
 - `PUBLIC_AI_ENDPOINT`: future public personalization endpoint placeholder; the current server-side AI draft route does not use it.
 - `AI_PROVIDER_ENDPOINT`: server-side AI provider endpoint for editorial draft generation.
@@ -150,18 +150,22 @@ Monetization readiness before applying:
 
 ## Daily and Personalization
 
-The first release includes a daily poem route and a disabled-by-default subscription UI. Interest tags live in `src/config/site.ts`, so later email, login, and personal-center features can reuse the same preference vocabulary.
+The first release includes a daily poem route and a disabled-by-default subscription UI. Interest tags live in `src/config/site.ts`, so email, login, and personal-center features can reuse the same preference vocabulary.
 
-No email provider is called yet. Configure subscription delivery through `PUBLIC_SUBSCRIPTION_ENDPOINT` only after the provider and cost rules are selected. AI provider calls are limited to moderator/admin draft APIs and remain disabled unless `PUBLIC_ENABLE_AI`, `AI_PROVIDER_ENDPOINT`, `AI_PROVIDER_MODEL`, `AI_PROVIDER_TOKEN`, and `AI_DAILY_DRAFT_LIMIT` are all configured.
+`/api/subscriptions` can store a pending daily-poem subscription request in D1, bind it to the current user when one exists, persist interest tags, and store a hashed unsubscribe token in KV. It returns `emailDelivery: "not_configured"` because no email provider is called yet. Keep `PUBLIC_ENABLE_SUBSCRIPTION=false` until `POETRY_DB`, `POETRY_TOKENS`, the privacy copy, and the future email-delivery provider are ready.
+
+AI provider calls are limited to moderator/admin draft APIs and remain disabled unless `PUBLIC_ENABLE_AI`, `AI_PROVIDER_ENDPOINT`, `AI_PROVIDER_MODEL`, `AI_PROVIDER_TOKEN`, and `AI_DAILY_DRAFT_LIMIT` are all configured.
 
 Account-ready routes and data boundaries now exist but stay disabled by default:
 
 - D1 migration: `migrations/0001_user_engagement.sql`
+- Subscription token migration: `migrations/0003_subscription_tokens.sql`
 - Personal center: `/me`
 - Login API boundary: `/api/auth/magic-link`
 - Preferences API boundary: `/api/preferences`
 - Saved poems API boundary: `/api/saved-poems`
 - Comments API boundary: `/api/comments`
+- Subscription API boundary: `/api/subscriptions`
 
 Use these flags only after a real auth/email plan and D1 binding IDs are configured:
 
@@ -169,6 +173,8 @@ Use these flags only after a real auth/email plan and D1 binding IDs are configu
 PUBLIC_ENABLE_LOGIN=true
 PUBLIC_ENABLE_PERSONAL_CENTER=true
 PUBLIC_ENABLE_COMMENTS=true
+PUBLIC_ENABLE_SUBSCRIPTION=true
+PUBLIC_SUBSCRIPTION_ENDPOINT=/api/subscriptions
 ```
 
 When disabled, these APIs return explicit `503` JSON. Comments are designed to be stored as `pending` first and only approved comments can be read for public pages.
@@ -318,6 +324,7 @@ Implemented in this branch:
 - Baidu URL submission command
 - D1 migration and repository SQL for users, identities, preferences, saved poems, reading history, subscriptions, comments, and moderation events
 - disabled-by-default login, personal-center, saved-poem, and comment API boundaries, with explicit `503`/`501` responses for disabled or unwired features
+- disabled-by-default subscription API boundary that stores pending requests in D1, hashes unsubscribe tokens in KV, and does not pretend to send email
 - `/me` personal center route with an anonymous/login-disabled prompt and config-driven preference form
 - preference read/save API wired to authenticated `locals.user` plus Cloudflare D1
 - saved-poem read/save/delete API wired to authenticated `locals.user`, Cloudflare D1, and reviewed-poem slug validation

@@ -41,3 +41,8 @@ export function getRateLimitKv(context: ContextLike): KvLike | undefined {
   const binding = context.locals?.runtime?.env?.POETRY_RATE_LIMIT;
   return binding && typeof binding === "object" && "get" in binding && "put" in binding ? (binding as KvLike) : undefined;
 }
+
+export function getTokenKv(context: ContextLike): KvLike | undefined {
+  const binding = context.locals?.runtime?.env?.POETRY_TOKENS;
+  return binding && typeof binding === "object" && "get" in binding && "put" in binding ? (binding as KvLike) : undefined;
+}

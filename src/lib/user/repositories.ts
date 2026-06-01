@@ -102,10 +102,22 @@ export function createSubscriptionStatement(input: {
   userId?: string;
   email: string;
   interestTags: string[];
+  status: "pending" | "active" | "unsubscribed";
+  unsubscribeTokenHash: string;
 }): Statement {
   return {
-    sql: "INSERT INTO subscriptions (id, user_id, email, interest_tags) VALUES (?, ?, ?, ?)",
-    params: [input.id, input.userId ?? null, input.email, JSON.stringify(input.interestTags)]
+    sql: `
+      INSERT INTO subscriptions (id, user_id, email, interest_tags, status, unsubscribe_token_hash)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `,
+    params: [
+      input.id,
+      input.userId ?? null,
+      input.email,
+      JSON.stringify(input.interestTags),
+      input.status,
+      input.unsubscribeTokenHash
+    ]
   };
 }
 

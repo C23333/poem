@@ -3,6 +3,7 @@ import { POST as requestMagicLink } from "./auth/magic-link";
 import { GET as listComments } from "./comments";
 import { GET as readPreferences } from "./preferences";
 import { GET as readSavedPoems } from "./saved-poems";
+import { POST as createSubscription } from "./subscriptions";
 
 const emptyContext = { locals: {} } as never;
 
@@ -31,6 +32,19 @@ describe("user API route boundaries", () => {
         request: new Request("https://poem.example/api/comments?poemSlug=jing-ye-si")
       } as never),
       "comments is disabled"
+    );
+  });
+
+  it("keeps subscriptions disabled by default", async () => {
+    await expectDisabled(
+      await createSubscription({
+        locals: {},
+        request: new Request("https://poem.example/api/subscriptions", {
+          method: "POST",
+          body: JSON.stringify({ email: "reader@example.com" })
+        })
+      } as never),
+      "subscriptions is disabled"
     );
   });
 });
