@@ -40,4 +40,21 @@ describe("AI draft repositories", () => {
     expect(statement.sql).toContain("UPDATE ai_drafts");
     expect(statement.params).toEqual(["approved", "reviewer_1", "draft_1"]);
   });
+
+  it("can store a generated draft as needs-review after quality checks", () => {
+    const statement = createAiDraftStatement({
+      id: "draft_1",
+      poemSlug: "jing-ye-si",
+      task: "explanation",
+      promptVersion: "poetry-editorial-v1",
+      providerName: "configured-provider",
+      modelName: "poetry-model",
+      inputContentKey: "poem:jing-ye-si:v1",
+      outputHash: "hash_1",
+      outputText: "Draft explanation",
+      status: "needs-review"
+    });
+
+    expect(statement.params.at(-1)).toBe("needs-review");
+  });
 });

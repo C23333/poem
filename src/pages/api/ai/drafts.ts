@@ -1,6 +1,7 @@
 import { getAiProviderConfig } from "@/config/site";
 import { createAiDraft } from "@/lib/ai/provider";
 import { outputHash } from "@/lib/ai/hash";
+import { evaluateAiDraftQuality } from "@/lib/ai/quality";
 import { checkAiDraftRateLimit } from "@/lib/ai/rate-limit";
 import { createAiDraftStatement } from "@/lib/ai/repositories";
 import { isReviewedPoemSlug } from "@/lib/content/reviewed-poems";
@@ -146,6 +147,11 @@ export async function POST(context?: RuntimeContext) {
 
   const draftId = `ai_draft_${crypto.randomUUID()}`;
   const inputContentKey = `poem:${input.poemSlug}:${input.task}:${config.promptVersion}`;
+  const quality = evaluateAiDraftQuality({
+    task: input.task,
+    sourceText: input.sourceText,
+    outputText: result.draft.text
+  });
   const statement = createAiDraftStatement({
     id: draftId,
     poemSlug: input.poemSlug,
@@ -155,7 +161,8 @@ export async function POST(context?: RuntimeContext) {
     modelName: config.model,
     inputContentKey,
     outputHash: await outputHash(result.draft.text),
-    outputText: result.draft.text
+    outputText: result.draft.text,
+    status: quality.status
   });
 
   await db.prepare(statement.sql).bind(...statement.params).run();
@@ -170,7 +177,8 @@ export async function POST(context?: RuntimeContext) {
         text: result.draft.text,
         promptVersion: result.draft.promptVersion,
         model: result.draft.model,
-        status: result.draft.status
+        status: quality.status,
+        qualityIssues: quality.issues
       }
     },
     { status: 202 }

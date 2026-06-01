@@ -13,6 +13,7 @@ export function createAiDraftStatement(input: {
   inputContentKey: string;
   outputHash: string;
   outputText: string;
+  status?: "draft" | "needs-review";
 }): Statement {
   return {
     sql: `
@@ -32,7 +33,7 @@ export function createAiDraftStatement(input: {
       input.inputContentKey,
       input.outputHash,
       input.outputText,
-      "draft"
+      input.status ?? "draft"
     ]
   };
 }

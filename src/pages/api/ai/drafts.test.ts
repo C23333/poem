@@ -286,4 +286,52 @@ describe("AI drafts API", () => {
       error: "AI provider request failed."
     });
   });
+
+  it("stores low-quality provider output as needs-review", async () => {
+    enableAi();
+    const run = vi.fn().mockResolvedValue({});
+    const bind = vi.fn().mockReturnValue({ run });
+    const prepare = vi.fn().mockReturnValue({ bind });
+    const kv = {
+      get: vi.fn().mockResolvedValue(null),
+      put: vi.fn().mockResolvedValue(undefined)
+    };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ text: "李白于唐玄宗开元十五年在长安写下此诗。" })
+      })
+    );
+
+    const response = await POST(
+      createContext({
+        user: { id: "mod_1", email: "mod@example.com", role: "moderator" },
+        db: { prepare },
+        kv,
+        body: { poemSlug: "jing-ye-si", task: "explanation", sourceText: "床前明月光" }
+      })
+    );
+
+    expect(response.status).toBe(202);
+    expect(bind).toHaveBeenCalledWith(
+      expect.stringMatching(/^ai_draft_/),
+      "jing-ye-si",
+      "explanation",
+      "poetry-editorial-v1",
+      "ai.example",
+      "poetry-model",
+      "poem:jing-ye-si:explanation:poetry-editorial-v1",
+      expect.stringMatching(/^[a-f0-9]{64}$/),
+      "李白于唐玄宗开元十五年在长安写下此诗。",
+      "needs-review"
+    );
+    await expect(response.json()).resolves.toMatchObject({
+      ok: true,
+      draft: {
+        status: "needs-review",
+        qualityIssues: ["missing-source-note"]
+      }
+    });
+  });
 });
