@@ -40,13 +40,41 @@ const reading = getReadingConfig();
   <section class="section grid">
     <div>
       <h2 class="section-title">阅读偏好</h2>
-      <p>默认模式：{reading.defaultMode}</p>
-      <p>默认注释语言：{reading.defaultHelperLanguage}</p>
+      <form class="preference-form" method="post" action="/api/preferences">
+        <label>
+          阅读模式
+          <select name="readingMode" disabled={!features.personalCenter}>
+            {reading.modes.map((mode) => <option value={mode} selected={mode === reading.defaultMode}>{mode}</option>)}
+          </select>
+        </label>
+        <label>
+          注释语言
+          <select name="helperLanguage" disabled={!features.personalCenter}>
+            {
+              reading.helperLanguages.map((language) => (
+                <option value={language} selected={language === reading.defaultHelperLanguage}>{language}</option>
+              ))
+            }
+          </select>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" name="emailDailyEnabled" value="true" disabled={!features.personalCenter} />
+          每日邮件推荐
+        </label>
+        <button type="submit" disabled={!features.personalCenter}>保存偏好</button>
+      </form>
     </div>
     <div>
       <h2 class="section-title">兴趣标签</h2>
       <div class="tags">
-        {INTEREST_TAGS.map((tag) => <span>{tag.labelZh} · {tag.labelEn}</span>)}
+        {
+          INTEREST_TAGS.map((tag) => (
+            <label>
+              <input type="checkbox" name="interestTags" value={tag.slug} disabled={!features.personalCenter} />
+              {tag.labelZh} · {tag.labelEn}
+            </label>
+          ))
+        }
       </div>
     </div>
   </section>
@@ -76,7 +104,8 @@ const reading = getReadingConfig();
     gap: 10px;
   }
 
-  input {
+  input,
+  select {
     border: 1px solid var(--line);
     padding: 12px;
   }
@@ -89,19 +118,37 @@ const reading = getReadingConfig();
     padding: 12px 18px;
   }
 
+  button:disabled,
+  input:disabled,
+  select:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
   }
 
-  .tags {
+  .preference-form {
+    border: 1px solid var(--line);
+    background: rgba(255, 249, 234, 0.58);
+    padding: 18px;
+  }
+
+  .check-row {
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tags {
+    display: grid;
     gap: 10px;
   }
 
-  .tags span {
+  .tags label {
     border: 1px solid var(--line);
     padding: 8px 10px;
   }

@@ -7,6 +7,7 @@ import {
   createUserIdentityStatement,
   createUserStatement,
   findUserByEmailQuery,
+  preferencesQuery,
   savePoemStatement,
   savePreferencesStatement,
   savedPoemsQuery,
@@ -61,6 +62,14 @@ describe("user engagement repositories", () => {
       JSON.stringify(["moon", "homesickness"]),
       1
     ]);
+  });
+
+  it("builds a preference lookup query", () => {
+    const statement = preferencesQuery("user_1");
+
+    expect(statement.sql).toContain("FROM user_preferences");
+    expect(statement.sql).toContain("WHERE user_id = ?");
+    expect(statement.params).toEqual(["user_1"]);
   });
 
   it("builds an idempotent saved poem statement", () => {

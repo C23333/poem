@@ -159,6 +159,8 @@ PUBLIC_ENABLE_COMMENTS=true
 
 When disabled, these APIs return explicit `503` JSON. Comments are designed to be stored as `pending` first and only approved comments can be read for public pages.
 
+`/api/preferences` can read and save preferences once `PUBLIC_ENABLE_PERSONAL_CENTER=true`, `locals.user` is populated by a real auth layer, and the `POETRY_DB` D1 binding is available. Without authentication it returns `401`; without D1 it returns `501`.
+
 ## Cloudflare Deployment
 
 Deploy to Cloudflare Pages with:
@@ -237,7 +239,8 @@ Implemented in this branch:
 - Baidu URL submission command
 - D1 migration and repository SQL for users, identities, preferences, saved poems, reading history, subscriptions, comments, and moderation events
 - disabled-by-default login, personal-center, saved-poem, and comment API boundaries, with explicit `503`/`501` responses for disabled or unwired features
-- `/me` personal center route with an anonymous/login-disabled prompt
+- `/me` personal center route with an anonymous/login-disabled prompt and config-driven preference form
+- preference read/save API wired to authenticated `locals.user` plus Cloudflare D1
 - config-driven `ads.txt`
 - real contact/privacy/terms pages
 - Cloudflare binding skeleton in `wrangler.toml`

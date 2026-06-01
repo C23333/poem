@@ -57,6 +57,13 @@ export function savePreferencesStatement(input: {
   };
 }
 
+export function preferencesQuery(userId: string): Statement {
+  return {
+    sql: "SELECT user_id, reading_mode, helper_language, interest_tags, email_daily_enabled, updated_at FROM user_preferences WHERE user_id = ?",
+    params: [userId]
+  };
+}
+
 export function savePoemStatement(input: { userId: string; poemSlug: string }): Statement {
   return {
     sql: "INSERT OR IGNORE INTO saved_poems (user_id, poem_slug) VALUES (?, ?)",

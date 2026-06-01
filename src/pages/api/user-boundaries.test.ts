@@ -4,6 +4,8 @@ import { GET as listComments } from "./comments";
 import { GET as readPreferences } from "./preferences";
 import { GET as readSavedPoems } from "./saved-poems";
 
+const emptyContext = { locals: {} } as never;
+
 async function expectDisabled(response: Response, error: string) {
   expect(response.status).toBe(503);
   await expect(response.json()).resolves.toEqual({ ok: false, error });
@@ -15,7 +17,7 @@ describe("user API route boundaries", () => {
   });
 
   it("keeps preferences disabled by default", async () => {
-    await expectDisabled(await readPreferences(), "personal center is disabled");
+    await expectDisabled(await readPreferences(emptyContext), "personal center is disabled");
   });
 
   it("keeps saved poems disabled by default", async () => {
