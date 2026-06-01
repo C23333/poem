@@ -249,6 +249,7 @@ Implemented in this branch:
 - saved-poem read/save/delete API wired to authenticated `locals.user`, Cloudflare D1, and reviewed-poem slug validation
 - comment read/submit/moderation APIs with approved-only public reads, pending-by-default submissions, and KV-backed rate-limit boundary
 - disabled-by-default AI provider config, adapter tests, and draft API boundary
+- AI draft D1 migration and repository helpers with prompt/model/input/output hash audit metadata
 - config-driven `ads.txt`
 - real contact/privacy/terms pages
 - Cloudflare binding skeleton in `wrangler.toml`
