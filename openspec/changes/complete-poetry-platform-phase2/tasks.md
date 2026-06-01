@@ -13,7 +13,7 @@
 - [x] 2.3 Implement dynasty, collection, article, poems index, poets index, and themes index pages.
 - [x] 2.4 Add import script that creates draft content only and never publishes imported poems automatically.
 - [x] 2.5 Add content verification script for value-added fields, source/license metadata, duplicate slug/canonical path, and related-link validity.
-- [ ] 2.6 Add enough reviewed seed content to make the site more credible before AdSense application.
+- [x] 2.6 Add enough reviewed seed content to make the site more credible before AdSense application.
 
 ## 3. Discovery Automation
 
