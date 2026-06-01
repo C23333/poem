@@ -88,10 +88,26 @@ npm run verify:discovery
 
 `verify:content` checks reviewed/published poems for value-added fields, source/license metadata, duplicate canonical slugs, and related-poem references. `verify:discovery` checks built `dist` output for sitemap, robots, RSS, sitemap exclusion of thin pages, and parseable JSON-LD.
 
+Search submission commands are explicit and never run automatically during build:
+
+```powershell
+$env:PUBLIC_SITE_URL="https://your-domain.example"
+$env:INDEXNOW_KEY="your-indexnow-key"
+npm run build
+npm run submit:indexnow -- --dry-run
+npm run submit:indexnow
+
+$env:BAIDU_SUBMIT_TOKEN="your-baidu-token"
+npm run submit:baidu -- --dry-run
+npm run submit:baidu
+```
+
+Both commands read `dist/sitemap-0.xml`, reject URLs whose host does not match `PUBLIC_SITE_URL`, and fail when the required token is missing. IndexNow also exposes `/{INDEXNOW_KEY}.txt` through the dynamic key route. Rebuild with the real `PUBLIC_SITE_URL` before running either submit command.
+
 For external consoles, submit the production domain after deployment:
 
 - Google Search Console: verify domain, submit `https://your-domain/sitemap-index.xml`, inspect important poem/article URLs.
-- Bing Webmaster Tools: verify domain, submit sitemap, then enable IndexNow only after `INDEXNOW_KEY` is hosted.
+- Bing Webmaster Tools: verify domain, submit sitemap, then enable IndexNow only after `INDEXNOW_KEY` is hosted and `/{INDEXNOW_KEY}.txt` returns the key.
 - Baidu Search Resource Platform: verify domain, submit sitemap or API URLs after ICP/domain requirements are clear. Baidu URL push can speed discovery, but it does not guarantee indexing.
 - AI crawlers: keep crawlable public pages in initial HTML; adjust `robots.txt` only after deciding whether to allow or restrict specific AI crawlers.
 
@@ -198,6 +214,8 @@ Implemented in this branch:
 - dynasty, collection, article, poem index, poet index, and theme index pages
 - expanded JSON-LD for site, breadcrumbs, people, collections, articles, and poems
 - content and discovery verification scripts
+- IndexNow key route and submit command
+- Baidu URL submission command
 - config-driven `ads.txt`
 - real contact/privacy/terms pages
 - Cloudflare binding skeleton in `wrangler.toml`
@@ -207,7 +225,5 @@ Still not implemented:
 - login, personal center, saved poems, comments, moderation APIs
 - real daily email delivery
 - real AI provider calls and editorial review UI
-- IndexNow key route and submit command
-- Baidu URL submission command
 - Node 22/Astro 6 security-upgrade pass
 - external domain, Cloudflare project, webmaster-console verification, AdSense approval, Baidu Union approval

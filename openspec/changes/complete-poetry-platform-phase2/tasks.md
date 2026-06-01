@@ -20,8 +20,8 @@
 - [x] 3.1 Add JSON-LD builders and tests for WebSite, BreadcrumbList, Person, CollectionPage, Article, and CreativeWork.
 - [x] 3.2 Wire JSON-LD into homepage, poem pages, poet pages, dynasty pages, collection pages, theme pages, and articles.
 - [x] 3.3 Add build-output discovery verification script for sitemap, robots, RSS, canonical URLs, reciprocal hreflang, and JSON-LD parsing.
-- [ ] 3.4 Add IndexNow key route and URL submission command that only submits reviewed sitemap URLs.
-- [ ] 3.5 Add Baidu submission command with explicit missing-token failure.
+- [x] 3.4 Add IndexNow key route and URL submission command that only submits reviewed sitemap URLs.
+- [x] 3.5 Add Baidu submission command with explicit missing-token failure.
 - [x] 3.6 Update README with Google Search Console, Bing Webmaster Tools, Baidu Search Resource Platform, IndexNow, and AI crawler setup.
 
 ## 4. User Engagement
