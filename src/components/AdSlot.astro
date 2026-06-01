@@ -10,12 +10,29 @@ const slotState = getAdSlotRenderState(ads, Astro.props.slot);
 ---
 
 {ads.enabled ? (
-  <ins class="adsbygoogle" data-ad-client={ads.adsenseClient} data-ad-slot={slotState.slotName}></ins>
+  <aside class="ad-boundary" aria-label="Advertisement">
+    <span>Advertisement</span>
+    <ins class="adsbygoogle" data-ad-client={ads.adsenseClient} data-ad-slot={slotState.slotName}></ins>
+  </aside>
 ) : (
   <div class="ad-slot" data-ad-slot={slotState.slotName} hidden={slotState.hidden} aria-hidden="true"></div>
 )}
 
 <style>
+  .ad-boundary {
+    display: grid;
+    gap: 8px;
+    margin: 28px 0;
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .ad-boundary span {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
   .ad-slot {
     margin-top: 18px;
     border: 1px dashed rgba(108, 98, 84, 0.5);

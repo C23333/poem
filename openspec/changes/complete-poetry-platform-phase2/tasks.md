@@ -48,7 +48,7 @@
 
 - [x] 6.1 Add `ads.txt` route driven by verified AdSense/Baidu publisher config.
 - [x] 6.2 Add tests ensuring disabled ads produce no reader-visible development placeholders.
-- [ ] 6.3 Add policy-safe ad slot layout checks for poem pages, index pages, and article pages.
+- [x] 6.3 Add policy-safe ad slot layout checks for poem pages, index pages, and article pages.
 - [x] 6.4 Update privacy/terms/contact pages for analytics, ads, email subscription, comments, and account data.
 - [x] 6.5 Add monetization launch checklist and status table for AdSense, Baidu Union, domain, content volume, and external approvals.
 

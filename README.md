@@ -249,6 +249,7 @@ npm test
 npm run build
 npm run verify:content
 npm run verify:discovery
+npm run verify:ads
 npm run smoke:user
 ```
 
@@ -286,6 +287,7 @@ Implemented in this branch:
 - AI draft quality checks that mark risky output as `needs-review` without automatic publication
 - AI draft review API that records moderator/admin approval or rejection without publishing generated content
 - config-driven `ads.txt`
+- build-output ad policy check for clear labels, non-sticky placement, and no misleading recommendation text near ads
 - real contact/privacy/terms pages
 - Cloudflare binding skeleton in `wrangler.toml`
 
