@@ -9,14 +9,37 @@ export type AiDraftRequest = {
   sourceText: string;
 };
 
-export function disabledAiResponse() {
+export type AiDraftProviderDisabled = {
+  ok: false;
+  error: string;
+};
+
+export type AiDraftProviderSuccess = {
+  ok: true;
+  draft: {
+    poemSlug: string;
+    task: AiDraftRequest["task"];
+    text: string;
+    promptVersion: string;
+    model: string;
+    status: "draft";
+  };
+};
+
+export type AiDraftProviderResult = AiDraftProviderDisabled | AiDraftProviderSuccess;
+
+export function disabledAiResponse(): AiDraftProviderDisabled {
   return {
     ok: false,
     error: "AI provider is disabled"
   };
 }
 
-export async function createAiDraft(config: AiProviderConfig, request: AiDraftRequest, fetcher: Fetcher) {
+export async function createAiDraft(
+  config: AiProviderConfig,
+  request: AiDraftRequest,
+  fetcher: Fetcher
+): Promise<AiDraftProviderResult> {
   if (!config.enabled) return disabledAiResponse();
 
   const response = await fetcher(config.endpoint, {

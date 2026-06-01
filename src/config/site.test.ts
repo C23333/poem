@@ -80,6 +80,14 @@ describe("site configuration", () => {
         PUBLIC_ENABLE_AI: "true",
         AI_PROVIDER_ENDPOINT: "https://ai.example/v1",
         AI_PROVIDER_MODEL: "poetry-model",
+        AI_PROVIDER_TOKEN: "token"
+      }).enabled
+    ).toBe(false);
+    expect(
+      getAiProviderConfig({
+        PUBLIC_ENABLE_AI: "true",
+        AI_PROVIDER_ENDPOINT: "https://ai.example/v1",
+        AI_PROVIDER_MODEL: "poetry-model",
         AI_PROVIDER_TOKEN: "token",
         AI_DAILY_DRAFT_LIMIT: "25"
       })

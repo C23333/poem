@@ -162,7 +162,7 @@ When disabled, these APIs return explicit `503` JSON. Comments are designed to b
 
 `/api/preferences` can read and save preferences once `PUBLIC_ENABLE_PERSONAL_CENTER=true`, `locals.user` is populated by a real auth layer, and the `POETRY_DB` D1 binding is available. Without authentication it returns `401`; without D1 it returns `501`.
 
-AI editorial routes also stay disabled by default. `/api/ai/drafts` returns `503` unless `PUBLIC_ENABLE_AI=true` and the provider endpoint, model, token, and daily draft limit are configured. The current adapter only creates draft payloads; it does not publish generated text.
+AI editorial routes also stay disabled by default. `/api/ai/drafts` returns `503` unless `PUBLIC_ENABLE_AI=true` and the provider endpoint, model, token, and daily draft limit are configured. When enabled, the route requires a moderator/admin `locals.user`, `POETRY_DB`, and `POETRY_RATE_LIMIT`; it can generate `explanation`, `translation`, `line-notes`, and `related-poems` drafts, store them in D1 with prompt/model/hash metadata, and return `202`. It still does not publish generated text.
 
 ## Cloudflare Deployment
 
@@ -250,6 +250,7 @@ Implemented in this branch:
 - comment read/submit/moderation APIs with approved-only public reads, pending-by-default submissions, and KV-backed rate-limit boundary
 - disabled-by-default AI provider config, adapter tests, and draft API boundary
 - AI draft D1 migration and repository helpers with prompt/model/input/output hash audit metadata
+- AI draft generation API for explanation, translation, line notes, and related-poem suggestions, guarded by moderator/admin role, reviewed-poem validation, D1 storage, and KV daily limits
 - config-driven `ads.txt`
 - real contact/privacy/terms pages
 - Cloudflare binding skeleton in `wrangler.toml`
@@ -259,6 +260,6 @@ Still not implemented:
 - real login sessions and profile data reads
 - real magic-link email delivery and authenticated sessions
 - real daily email delivery
-- real AI provider calls and editorial review UI
+- selected live AI provider credentials and editorial review UI
 - Node 22/Astro 6 security-upgrade pass
 - external domain, Cloudflare project, webmaster-console verification, AdSense approval, Baidu Union approval

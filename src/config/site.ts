@@ -21,9 +21,9 @@ function boolValue(value: string | undefined): boolean {
   return value === "true";
 }
 
-function positiveInt(value: string | undefined, fallback: number): number {
+function optionalPositiveInt(value: string | undefined): number {
   const parsed = Number.parseInt(value || "", 10);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
 }
 
 function readingMode(value: string | undefined): ReadingMode {
@@ -145,7 +145,7 @@ export function getAiProviderConfig(env: EnvLike = import.meta.env) {
   const endpoint = env.AI_PROVIDER_ENDPOINT || "";
   const model = env.AI_PROVIDER_MODEL || "";
   const token = env.AI_PROVIDER_TOKEN || "";
-  const dailyDraftLimit = positiveInt(env.AI_DAILY_DRAFT_LIMIT, 10);
+  const dailyDraftLimit = optionalPositiveInt(env.AI_DAILY_DRAFT_LIMIT);
 
   return {
     enabled: boolValue(env.PUBLIC_ENABLE_AI) && Boolean(endpoint && model && token && dailyDraftLimit),
