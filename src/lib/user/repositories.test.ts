@@ -8,6 +8,7 @@ import {
   createUserStatement,
   deleteSavedPoemStatement,
   findUserByEmailQuery,
+  moderateCommentStatement,
   preferencesQuery,
   savePoemStatement,
   savePreferencesStatement,
@@ -147,5 +148,12 @@ describe("user engagement repositories", () => {
 
     expect(statement.sql).toContain("INSERT INTO moderation_events");
     expect(statement.params).toEqual(["event_1", "comment_1", null, "approve", "Reviewed manually"]);
+  });
+
+  it("builds a comment moderation update statement", () => {
+    const statement = moderateCommentStatement({ id: "comment_1", status: "approved" });
+
+    expect(statement.sql).toContain("UPDATE comments");
+    expect(statement.params).toEqual(["approved", "comment_1"]);
   });
 });

@@ -140,3 +140,10 @@ export function createModerationEventStatement(input: {
     params: [input.id, input.commentId, input.moderatorUserId ?? null, input.action, input.reason ?? null]
   };
 }
+
+export function moderateCommentStatement(input: { id: string; status: "approved" | "rejected" }): Statement {
+  return {
+    sql: "UPDATE comments SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+    params: [input.status, input.id]
+  };
+}

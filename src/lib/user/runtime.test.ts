@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getD1Database, getRequestUser } from "./runtime";
+import { getD1Database, getRateLimitKv, getRequestUser } from "./runtime";
 
 describe("user runtime helpers", () => {
   it("returns the authenticated user from Astro locals", () => {
@@ -21,5 +21,11 @@ describe("user runtime helpers", () => {
 
   it("returns undefined when the D1 binding is missing", () => {
     expect(getD1Database({ locals: { runtime: { env: {} } } })).toBeUndefined();
+  });
+
+  it("reads the configured rate-limit KV binding", () => {
+    const kv = { get: async () => null, put: async () => undefined };
+
+    expect(getRateLimitKv({ locals: { runtime: { env: { POETRY_RATE_LIMIT: kv } } } })).toBe(kv);
   });
 });

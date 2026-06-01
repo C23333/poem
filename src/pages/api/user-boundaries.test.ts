@@ -25,6 +25,12 @@ describe("user API route boundaries", () => {
   });
 
   it("keeps comments disabled by default", async () => {
-    await expectDisabled(await listComments(), "comments is disabled");
+    await expectDisabled(
+      await listComments({
+        locals: {},
+        request: new Request("https://poem.example/api/comments?poemSlug=jing-ye-si")
+      } as never),
+      "comments is disabled"
+    );
   });
 });

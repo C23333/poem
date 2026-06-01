@@ -242,13 +242,14 @@ Implemented in this branch:
 - `/me` personal center route with an anonymous/login-disabled prompt and config-driven preference form
 - preference read/save API wired to authenticated `locals.user` plus Cloudflare D1
 - saved-poem read/save/delete API wired to authenticated `locals.user`, Cloudflare D1, and reviewed-poem slug validation
+- comment read/submit/moderation APIs with approved-only public reads, pending-by-default submissions, and KV-backed rate-limit boundary
 - config-driven `ads.txt`
 - real contact/privacy/terms pages
 - Cloudflare binding skeleton in `wrangler.toml`
 
 Still not implemented:
 
-- real login sessions, profile data reads, comments, and moderation APIs
+- real login sessions and profile data reads
 - real magic-link email delivery and authenticated sessions
 - real daily email delivery
 - real AI provider calls and editorial review UI
