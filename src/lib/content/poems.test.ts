@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { displayPoetName, hasEnglishAssets, hasLineHelpers, isIndexablePoem, poemPath } from "./poems";
+import { displayPoetName, entrySlug, hasEnglishAssets, hasLineHelpers, isIndexablePoem, poemPath } from "./poems";
 
 const reviewedPoem = {
-  slug: "jing-ye-si",
+  id: "jing-ye-si",
   data: {
     title: "静夜思",
     titleEn: "Quiet Night Thoughts",
@@ -23,7 +23,7 @@ const reviewedPoem = {
 };
 
 const thinPoem = {
-  slug: "thin",
+  id: "thin",
   data: {
     title: "薄页",
     reviewed: false,
@@ -87,11 +87,15 @@ describe("poem content helpers", () => {
     expect(poemPath("jing-ye-si", "en")).toBe("/en/poems/jing-ye-si");
   });
 
+  it("uses Astro content entry id as the route slug", () => {
+    expect(entrySlug(reviewedPoem)).toBe("jing-ye-si");
+  });
+
   it("uses poet collection data for display names", () => {
     expect(
       displayPoetName(
         { data: { poet: "li-bai" } },
-        [{ slug: "li-bai", data: { name: "李白", nameEn: "Li Bai" } }]
+        [{ id: "li-bai", data: { name: "李白", nameEn: "Li Bai" } }]
       )
     ).toEqual({ zh: "李白", en: "Li Bai" });
   });

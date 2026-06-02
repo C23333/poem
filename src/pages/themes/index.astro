@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { entrySlug } from "@/lib/content/entries";
 import { collectionPageJsonLd } from "@/lib/seo/structured-data";
 
 export const prerender = true;
@@ -28,7 +29,7 @@ const site = getSiteConfig();
 
   <section class="index-grid">
     {themes.map((theme) => (
-      <a href={`/themes/${theme.slug}`}>
+      <a href={`/themes/${entrySlug(theme)}`}>
         <strong>{theme.data.name}</strong>
         <span>{theme.data.nameEn}</span>
         <small>{theme.data.summaryZh}</small>

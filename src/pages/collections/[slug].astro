@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { entrySlug } from "@/lib/content/entries";
 import { isIndexablePoem } from "@/lib/content/poems";
 import { breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/seo/structured-data";
 
@@ -14,11 +15,11 @@ export async function getStaticPaths() {
   return collections
     .filter((collection) => collection.data.reviewState === "reviewed" || collection.data.reviewState === "published")
     .map((collection) => ({
-      params: { slug: collection.slug },
+      params: { slug: entrySlug(collection) },
       props: {
         collection,
         poems: poems.filter(
-          (poem) => isIndexablePoem(poem) && collection.data.poemSlugs.includes(poem.slug)
+          (poem) => isIndexablePoem(poem) && collection.data.poemSlugs.includes(entrySlug(poem))
         )
       }
     }));
@@ -26,7 +27,7 @@ export async function getStaticPaths() {
 
 const { collection, poems } = Astro.props;
 const site = getSiteConfig();
-const collectionPath = `/collections/${collection.slug}`;
+const collectionPath = `/collections/${entrySlug(collection)}`;
 ---
 
 <BaseLayout
@@ -56,7 +57,7 @@ const collectionPath = `/collections/${collection.slug}`;
     <h2 class="section-title">合集诗词</h2>
     <div class="poem-list">
       {poems.map((poem) => (
-        <a href={`/poems/${poem.slug}`}>
+        <a href={`/poems/${entrySlug(poem)}`}>
           <strong>{poem.data.title}</strong>
           <span>{poem.data.titleEn}</span>
           <small>{poem.data.explanationZh}</small>

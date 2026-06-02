@@ -26,6 +26,18 @@ describe("verifyDiscovery", () => {
     expect(await verifyDiscovery({ distDir: dist })).toEqual([]);
   });
 
+  it("accepts Cloudflare server output with public files under dist/client", async () => {
+    const dist = await createDist({
+      "client/robots.txt": "Sitemap: https://poem.example/sitemap-index.xml\n",
+      "client/rss.xml": "<rss></rss>",
+      "client/sitemap-0.xml": "<urlset><url><loc>https://poem.example/poems/jing-ye-si</loc></url></urlset>",
+      "client/index.html": '<script type="application/ld+json">{"@type":"WebSite"}</script>',
+      "server/entry.mjs": "export default {};"
+    });
+
+    expect(await verifyDiscovery({ distDir: dist })).toEqual([]);
+  });
+
   it("rejects thin poem URLs in sitemap output", async () => {
     const dist = await createDist({
       "robots.txt": "Sitemap: https://poem.example/sitemap-index.xml\n",

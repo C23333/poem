@@ -2,18 +2,19 @@
 import { getCollection } from "astro:content";
 import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { entrySlug } from "@/lib/content/entries";
 import { breadcrumbJsonLd, personJsonLd } from "@/lib/seo/structured-data";
 
 export const prerender = true;
 
 export async function getStaticPaths() {
   const poets = await getCollection("poets");
-  return poets.map((poet) => ({ params: { slug: poet.slug }, props: { poet } }));
+  return poets.map((poet) => ({ params: { slug: entrySlug(poet) }, props: { poet } }));
 }
 
 const { poet } = Astro.props;
 const site = getSiteConfig();
-const poetPath = `/poets/${poet.slug}`;
+const poetPath = `/poets/${entrySlug(poet)}`;
 ---
 
 <BaseLayout

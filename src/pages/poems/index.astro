@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { entrySlug } from "@/lib/content/entries";
 import { isIndexablePoem } from "@/lib/content/poems";
 import { collectionPageJsonLd } from "@/lib/seo/structured-data";
 
@@ -29,7 +30,7 @@ const site = getSiteConfig();
 
   <section class="poem-grid">
     {poems.map((poem) => (
-      <a href={`/poems/${poem.slug}`}>
+      <a href={`/poems/${entrySlug(poem)}`}>
         <strong>{poem.data.title}</strong>
         <span>{poem.data.titleEn}</span>
         <small>{poem.data.themes.join(" / ")}</small>

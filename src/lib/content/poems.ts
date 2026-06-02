@@ -1,7 +1,8 @@
 type ReviewState = "draft" | "ai-draft" | "needs-review" | "reviewed" | "published";
 
+export { entrySlug } from "./entries";
+
 type PoemLike = {
-  slug: string;
   data: {
     poet?: string;
     reviewState?: ReviewState;
@@ -21,7 +22,7 @@ type PoemLike = {
 };
 
 type PoetLike = {
-  slug: string;
+  id: string;
   data: {
     name: string;
     nameEn?: string;
@@ -63,7 +64,7 @@ export function poemPath(slug: string, locale: "zh-CN" | "en"): string {
 }
 
 export function displayPoetName(poem: Pick<PoemLike, "data">, poets: PoetLike[]) {
-  const poet = poets.find((item) => item.slug === poem.data.poet);
+  const poet = poets.find((item) => item.id === poem.data.poet);
   return {
     zh: poet?.data.name || poem.data.poet || "",
     en: poet?.data.nameEn || poet?.data.name || poem.data.poet || ""

@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { publicOutputDir } from "../src/lib/build/public-output.mjs";
 import { isNoindexSitemapUrl } from "../src/lib/seo/sitemap-rules.js";
 
 async function walkFiles(dir) {
@@ -32,6 +33,7 @@ function normalizedSiteUrl(value) {
 
 export async function verifyDiscovery(options = {}) {
   const distDir = options.distDir || join(process.cwd(), "dist");
+  const publicDir = publicOutputDir(distDir);
   const productionMode = Boolean(options.productionMode);
   const siteUrl = normalizedSiteUrl(options.siteUrl || process.env.PUBLIC_SITE_URL || "");
   const errors = [];
@@ -42,12 +44,12 @@ export async function verifyDiscovery(options = {}) {
 
   const requiredFiles = ["robots.txt", "rss.xml", "sitemap-0.xml"];
   for (const file of requiredFiles) {
-    if (!existsSync(join(distDir, file))) {
+    if (!existsSync(join(publicDir, file))) {
       errors.push(`${file} is missing from dist output.`);
     }
   }
 
-  const sitemapPath = join(distDir, "sitemap-0.xml");
+  const sitemapPath = join(publicDir, "sitemap-0.xml");
   if (existsSync(sitemapPath)) {
     const sitemap = await readFile(sitemapPath, "utf8");
     if (sitemap.includes("/poems/jiang-ye")) {
@@ -70,14 +72,14 @@ export async function verifyDiscovery(options = {}) {
     }
   }
 
-  const htmlFiles = (await walkFiles(distDir)).filter((file) => file.endsWith(".html"));
+  const htmlFiles = (await walkFiles(publicDir)).filter((file) => file.endsWith(".html"));
   if (htmlFiles.length === 0) {
     errors.push("No HTML files were found in dist output.");
   }
 
   for (const file of htmlFiles) {
     const html = await readFile(file, "utf8");
-    const displayPath = relative(distDir, file).replace(/\\/g, "/");
+    const displayPath = relative(publicDir, file).replace(/\\/g, "/");
     for (const block of jsonLdBlocks(html)) {
       try {
         JSON.parse(block);

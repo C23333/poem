@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { entrySlug } from "@/lib/content/entries";
 import { isIndexablePoem } from "@/lib/content/poems";
 import { breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/seo/structured-data";
 
@@ -13,7 +14,7 @@ export async function getStaticPaths() {
   const poets = await getCollection("poets");
 
   return dynasties.map((dynasty) => ({
-    params: { slug: dynasty.slug },
+    params: { slug: entrySlug(dynasty) },
     props: {
       dynasty,
       poems: poems.filter((poem) => isIndexablePoem(poem) && poem.data.dynasty === dynasty.data.name),
@@ -24,7 +25,7 @@ export async function getStaticPaths() {
 
 const { dynasty, poems, poets } = Astro.props;
 const site = getSiteConfig();
-const dynastyPath = `/dynasties/${dynasty.slug}`;
+const dynastyPath = `/dynasties/${entrySlug(dynasty)}`;
 ---
 
 <BaseLayout
@@ -53,14 +54,14 @@ const dynastyPath = `/dynasties/${dynasty.slug}`;
   <section class="section">
     <h2 class="section-title">诗人</h2>
     <div class="link-grid">
-      {poets.map((poet) => <a href={`/poets/${poet.slug}`}>{poet.data.name} · {poet.data.nameEn}</a>)}
+      {poets.map((poet) => <a href={`/poets/${entrySlug(poet)}`}>{poet.data.name} · {poet.data.nameEn}</a>)}
     </div>
   </section>
 
   <section class="section">
     <h2 class="section-title">已审校诗词</h2>
     <div class="link-grid">
-      {poems.map((poem) => <a href={`/poems/${poem.slug}`}>{poem.data.title} · {poem.data.titleEn}</a>)}
+      {poems.map((poem) => <a href={`/poems/${entrySlug(poem)}`}>{poem.data.title} · {poem.data.titleEn}</a>)}
     </div>
   </section>
 </BaseLayout>

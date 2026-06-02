@@ -2,6 +2,7 @@
 import { getCollection, render } from "astro:content";
 import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { entrySlug } from "@/lib/content/entries";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/seo/structured-data";
 
 export const prerender = true;
@@ -11,13 +12,13 @@ export async function getStaticPaths() {
 
   return articles
     .filter((article) => article.data.reviewState === "reviewed" || article.data.reviewState === "published")
-    .map((article) => ({ params: { slug: article.slug }, props: { article } }));
+    .map((article) => ({ params: { slug: entrySlug(article) }, props: { article } }));
 }
 
 const { article } = Astro.props;
 const { Content } = await render(article);
 const site = getSiteConfig();
-const articlePath = `/articles/${article.slug}`;
+const articlePath = `/articles/${entrySlug(article)}`;
 ---
 
 <BaseLayout

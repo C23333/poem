@@ -10,6 +10,8 @@ Chinese classical poetry site for global SEO traffic. The first release focuses 
 - Vitest
 - Cloudflare Pages / Workers target
 
+Requires Node `>=22.12.0`. The current upgrade pass was verified locally with Node `24.16.0` and npm `11.13.0`.
+
 ## Development
 
 ```powershell
@@ -100,7 +102,7 @@ npm run verify:discovery
 npm run smoke:user
 ```
 
-`verify:content` checks reviewed/published poems for value-added fields, source/license metadata, duplicate canonical slugs, and related-poem references. `verify:discovery` checks built `dist` output for sitemap, robots, RSS, sitemap exclusion of thin pages, and parseable JSON-LD. `smoke:user` expects a local server at `SMOKE_BASE_URL` or `http://127.0.0.1:4327` and checks `/me`, poem actions, and disabled user APIs.
+`verify:content` checks reviewed/published poems for value-added fields, source/license metadata, duplicate canonical slugs, and related-poem references. `verify:discovery` checks built public output for sitemap, robots, RSS, sitemap exclusion of thin pages, and parseable JSON-LD. For Cloudflare server builds, public files live under `dist/client`; the verifier also supports older flat `dist` output. `smoke:user` expects a local server at `SMOKE_BASE_URL` or `http://127.0.0.1:4327` and checks `/me`, poem actions, and disabled user APIs.
 
 Search submission commands are explicit and never run automatically during build:
 
@@ -116,7 +118,7 @@ npm run submit:baidu -- --dry-run
 npm run submit:baidu
 ```
 
-Both commands read `dist/sitemap-0.xml`, reject URLs whose host does not match `PUBLIC_SITE_URL`, and fail when the required token is missing. IndexNow also exposes `/{INDEXNOW_KEY}.txt` through the dynamic key route. Rebuild with the real `PUBLIC_SITE_URL` before running either submit command.
+Both commands read `dist/client/sitemap-0.xml` for Cloudflare server output, reject URLs whose host does not match `PUBLIC_SITE_URL`, and fail when the required token is missing. IndexNow also exposes `/{INDEXNOW_KEY}.txt` through the dynamic key route. Rebuild with the real `PUBLIC_SITE_URL` before running either submit command.
 
 For external consoles, submit the production domain after deployment:
 
@@ -208,6 +210,7 @@ Deploy to Cloudflare Pages with:
 - Build command: `npm run build`
 - Output directory: `dist`
 - Environment variables from `.env.example`
+- Node version: `22.12.0` or newer
 
 Production validation:
 
@@ -222,12 +225,12 @@ $env:PUBLIC_SITE_URL="https://your-domain.example"
 npm run validate:production
 ```
 
-`wrangler.toml` declares placeholder D1/KV binding names for Phase 2 features. It also declares `SESSION`, because the Astro Cloudflare adapter expects that KV binding when sessions are enabled by the adapter. Replace placeholder IDs in Cloudflare before enabling login, comments, subscriptions, or rate-limited APIs.
+`wrangler.toml` declares placeholder D1/KV binding names for Phase 2 features. It also declares `SESSION`, because the Astro Cloudflare adapter expects that KV binding when sessions are enabled by the adapter. The `POETRY_ASSETS` assets binding is explicit because current Wrangler rejects the reserved binding name `ASSETS` in Pages projects. Replace placeholder IDs in Cloudflare before enabling login, comments, subscriptions, or rate-limited APIs.
 
 Launch runbook:
 
 - Create Cloudflare Pages project and connect the repository branch.
-- Configure Node/runtime version; current dependency audit remediation needs a separate Node 22/Astro 6 compatibility pass.
+- Configure Node/runtime version to Node `>=22.12.0`.
 - Set `PUBLIC_SITE_URL` to the real domain and add analytics/ad variables only after approval.
 - Replace placeholder D1/KV IDs or keep account features disabled.
 - Run `npm test`, `npm run check`, `npm run build`, `npm run verify:content`, `npm run verify:discovery`, and `npm run validate:production`.
@@ -241,9 +244,15 @@ Future login, personal center, and recommendation APIs should use Cloudflare Wor
 
 ## Dependency Audit
 
-On Node 20, the project uses Astro 5-compatible packages. `npm audit --audit-level=moderate` currently reports vulnerabilities in the Astro/Cloudflare/Wrangler dependency chain. The available npm fix upgrades to Astro 6 and `@astrojs/cloudflare` 13, but `astro@6.4.2` requires Node `>=22.12.0`.
+The project now targets Node `>=22.12.0` and uses Astro `6.4.2`, `@astrojs/cloudflare` `13.6.0`, Wrangler `4.95.0`, and `@astrojs/check` `0.9.9`. The previous Node 20/Astro 5 audit issue has been remediated through the Node 22+ compatibility pass.
 
-Do not run `npm audit fix --force` on the Node 20 environment without approving a Node 22 upgrade and a follow-up compatibility pass.
+Local verification on Node `24.16.0` / npm `11.13.0`:
+
+```powershell
+npm audit --audit-level=moderate
+```
+
+Result: `found 0 vulnerabilities`.
 
 ## Verification
 
@@ -268,11 +277,16 @@ After build, inspect:
 - representative poem page HTML
 - mobile and desktop screenshots
 
-### Verification Snapshot: 2026-06-01
+For Cloudflare server output, inspect these files under `dist/client`.
+
+### Verification Snapshot: 2026-06-02
 
 Latest local verification on branch `codex/build-poetry-traffic-site`:
 
 ```powershell
+$env:Path="C:\Users\lyk\scoop\apps\nodejs-lts\current;" + $env:Path
+node -v
+npm -v
 npm test
 npm run check
 npm run build
@@ -280,22 +294,27 @@ npm run verify:content
 npm run verify:discovery
 npm run verify:ads
 $env:PUBLIC_SITE_URL="https://poem.example"; npm run validate:production
-$env:SMOKE_BASE_URL="http://127.0.0.1:4328"; npm run smoke:user
+npm audit --audit-level=moderate
+$env:SMOKE_BASE_URL="http://127.0.0.1:4332"; npm run smoke:user
+$env:INDEXNOW_KEY="abcDEF-12345678"; npm run submit:indexnow -- --dry-run
+$env:BAIDU_SUBMIT_TOKEN="token123"; npm run submit:baidu -- --dry-run
 ```
 
 Results:
 
-- `npm test`: passed, 31 test files / 158 tests.
+- `node -v`: `v24.16.0`.
+- `npm -v`: `11.13.0`.
+- `npm test`: passed, 34 test files / 173 tests.
 - `npm run check`: passed, 0 errors / 0 warnings / 0 hints.
-- `npm run build`: passed, generated 5 reviewed poem slugs and built Cloudflare server output.
+- `npm run build`: passed, generated 5 reviewed poem slugs and built Cloudflare server output with public assets under `dist/client`.
 - `npm run verify:content`: passed.
-- `npm run verify:discovery`: passed against `dist`.
+- `npm run verify:discovery`: passed against `dist/client`.
 - `npm run verify:ads`: passed.
 - `npm run validate:production`: passed with preview placeholder `https://poem.example`.
-- `npm run smoke:user`: passed against local Astro dev server.
-- Browser smoke checked `/`, `/poems/jing-ye-si/`, `/en/poems/jing-ye-si/`, `/poems/`, and `/me`; `/me` stayed `noindex,follow`, subscription stayed disabled, and disabled comment APIs returned explicit `503`.
-
-One failed build attempt during verification came from running `npm run check` and `npm run build` at the same time. Both processes touched Vite cache under `node_modules/.vite/deps`, causing `ENOTEMPTY`. Running `npm run build` by itself passed.
+- `npm audit --audit-level=moderate`: passed, `found 0 vulnerabilities`.
+- `npm run smoke:user`: passed against local Astro dev server at `http://127.0.0.1:4332`.
+- `npm run submit:indexnow -- --dry-run`: generated a 33-URL IndexNow payload from `dist/client/sitemap-0.xml` after rebuilding with `PUBLIC_SITE_URL=https://poem.example`.
+- `npm run submit:baidu -- --dry-run`: generated a 33-URL Baidu push body from `dist/client/sitemap-0.xml` after rebuilding with `PUBLIC_SITE_URL=https://poem.example`.
 
 This means the branch is ready for a Cloudflare preview deployment after environment variables and placeholder bindings are set. It is not a verified production launch yet.
 
@@ -307,7 +326,6 @@ Still unverified outside the local repo:
 - AdSense approval, Baidu Union approval, and live `ads.txt` publisher record
 - live email provider, magic-link delivery, subscription delivery, and authenticated session flow
 - live AI provider credentials, data-retention review, billing limits, and full editorial UI
-- Node 22 / Astro 6 compatibility pass and follow-up `npm audit` remediation
 
 ## Current Phase 2A Status
 
@@ -338,6 +356,7 @@ Implemented in this branch:
 - build-output ad policy check for clear labels, non-sticky placement, and no misleading recommendation text near ads
 - real contact/privacy/terms pages
 - Cloudflare binding skeleton in `wrangler.toml`
+- Node 22+ runtime target, Astro 6 / Cloudflare adapter 13 upgrade, and npm audit remediation
 
 Still not implemented:
 
@@ -345,5 +364,4 @@ Still not implemented:
 - real magic-link email delivery and authenticated sessions
 - real daily email delivery
 - selected live AI provider credentials and full editorial review UI
-- Node 22/Astro 6 security-upgrade pass
 - external domain, Cloudflare project, webmaster-console verification, AdSense approval, Baidu Union approval

@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import PoemReader from "@/components/PoemReader.astro";
 import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { entrySlug } from "@/lib/content/entries";
 import { displayPoetName, hasEnglishAssets, isIndexablePoem } from "@/lib/content/poems";
 import { buildHreflangLinks, pageRobots } from "@/lib/seo/meta";
 import { breadcrumbJsonLd, poemJsonLd } from "@/lib/seo/structured-data";
@@ -14,14 +15,15 @@ export async function getStaticPaths() {
   const poets = await getCollection("poets");
   return poems
     .filter((poem) => hasEnglishAssets(poem))
-    .map((poem) => ({ params: { slug: poem.slug }, props: { poem, poets } }));
+    .map((poem) => ({ params: { slug: entrySlug(poem) }, props: { poem, poets } }));
 }
 
 const { poem, poets } = Astro.props;
 const data = poem.data;
 const site = getSiteConfig();
-const poemPath = `/poems/${poem.slug}`;
-const englishPoemPath = `/en/poems/${poem.slug}`;
+const slug = entrySlug(poem);
+const poemPath = `/poems/${slug}`;
+const englishPoemPath = `/en/poems/${slug}`;
 const poetName = displayPoetName(poem, poets);
 ---
 

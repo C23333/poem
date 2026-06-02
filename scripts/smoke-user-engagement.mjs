@@ -44,6 +44,10 @@ export async function smokeUserEngagement() {
     { ok: false, error: "subscriptions is disabled" },
     {
       method: "POST",
+      headers: {
+        "content-type": "application/json",
+        origin: new URL(baseUrl).origin
+      },
       body: JSON.stringify({ email: "reader@example.com" })
     }
   );

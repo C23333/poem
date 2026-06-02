@@ -2,18 +2,19 @@
 import { getCollection } from "astro:content";
 import { getSiteConfig } from "@/config/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { entrySlug } from "@/lib/content/entries";
 import { breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/seo/structured-data";
 
 export const prerender = true;
 
 export async function getStaticPaths() {
   const themes = await getCollection("themes");
-  return themes.map((theme) => ({ params: { slug: theme.slug }, props: { theme } }));
+  return themes.map((theme) => ({ params: { slug: entrySlug(theme) }, props: { theme } }));
 }
 
 const { theme } = Astro.props;
 const site = getSiteConfig();
-const themePath = `/themes/${theme.slug}`;
+const themePath = `/themes/${entrySlug(theme)}`;
 ---
 
 <BaseLayout

@@ -1,4 +1,6 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 
 const poemLine = z.object({
   zh: z.string(),
@@ -10,7 +12,7 @@ const poemLine = z.object({
 const reviewState = z.enum(["draft", "ai-draft", "needs-review", "reviewed", "published"]).default("draft");
 
 const poems = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/[^_]*.md", base: "./src/content/poems" }),
   schema: z.object({
     title: z.string(),
     titleEn: z.string().optional(),
@@ -36,7 +38,7 @@ const poems = defineCollection({
 });
 
 const poets = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/[^_]*.md", base: "./src/content/poets" }),
   schema: z.object({
     name: z.string(),
     nameEn: z.string().optional(),
@@ -49,7 +51,7 @@ const poets = defineCollection({
 });
 
 const themes = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/[^_]*.md", base: "./src/content/themes" }),
   schema: z.object({
     name: z.string(),
     nameEn: z.string().optional(),
@@ -59,7 +61,7 @@ const themes = defineCollection({
 });
 
 const dynasties = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/[^_]*.md", base: "./src/content/dynasties" }),
   schema: z.object({
     name: z.string(),
     nameEn: z.string().optional(),
@@ -71,7 +73,7 @@ const dynasties = defineCollection({
 });
 
 const poemCollections = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/[^_]*.md", base: "./src/content/collections" }),
   schema: z.object({
     name: z.string(),
     nameEn: z.string().optional(),
@@ -83,7 +85,7 @@ const poemCollections = defineCollection({
 });
 
 const articles = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/[^_]*.md", base: "./src/content/articles" }),
   schema: z.object({
     title: z.string(),
     titleEn: z.string().optional(),

@@ -1,16 +1,17 @@
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { publicOutputFile } from "../src/lib/build/public-output.mjs";
 import { buildBaiduSubmissionRequest, extractSitemapUrls, filterReviewedSubmissionUrls } from "../src/lib/search/submit-urls.mjs";
 
 const dryRun = process.argv.includes("--dry-run");
 const distDir = process.env.DIST_DIR || join(process.cwd(), "dist");
-const sitemapPath = join(distDir, "sitemap-0.xml");
+const sitemapPath = publicOutputFile(distDir, "sitemap-0.xml");
 const siteUrl = (process.env.PUBLIC_SITE_URL || "https://example.com").replace(/\/+$/, "");
 
 async function main() {
   if (!existsSync(sitemapPath)) {
-    throw new Error("dist/sitemap-0.xml is missing. Run npm run build first.");
+    throw new Error("sitemap-0.xml is missing from build output. Run npm run build first.");
   }
 
   const urls = filterReviewedSubmissionUrls(extractSitemapUrls(await readFile(sitemapPath, "utf8")));
